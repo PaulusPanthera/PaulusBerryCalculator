@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="A lean static starter for a berry calculator website with a clean local Git workflow."
+    >
+    <meta name="theme-color" content="#1f6feb">
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/css/main.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Private project</p>
+          <h1 class="site-title">PaulusBerryCalculator</h1>
+        </div>
+
+        <nav class="site-nav" aria-label="Primary">
+          <a aria-current="page" href="index.html">Home</a>
+          <a href="pages/about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container stack-lg">
+      <section class="hero card">
+        <div class="stack-md">
+          <p class="eyebrow">Static site starter</p>
+          <h2>Lean structure, clean workflow, no unnecessary overhead</h2>
+          <p class="lead">
+            A lean starting point for your own berry calculator: plain HTML, CSS, and JS with just enough
+            structure to learn good project habits without overengineering.
+          </p>
+        </div>
+      </section>
+
+      <section class="card stack-md" aria-labelledby="berries-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Data-driven demo</p>
+            <h2 id="berries-heading">Sample berry dataset</h2>
+          </div>
+          <div class="pill-row" id="berry-summary" aria-live="polite"></div>
+        </div>
+
+        <label class="field" for="berry-search">
+          <span>Search berries</span>
+          <input id="berry-search" name="berry-search" type="search" placeholder="Try leppa, oran, cheri...">
+        </label>
+
+        <div id="berry-results" class="grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Built locally, versioned with Git, and ready for static publishing.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="assets/js/main.js"></script>
+  </body>
+</html>

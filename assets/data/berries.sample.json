@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Cheri Berry",
+    "tier": "Status cure",
+    "buyPrice": 900,
+    "sellPrice": 1100,
+    "notes": "Use this file shape as your first data contract."
+  },
+  {
+    "name": "Leppa Berry",
+    "tier": "Utility",
+    "buyPrice": 1400,
+    "sellPrice": 1650,
+    "notes": "Good sample for a common, recognizable berry entry."
+  },
+  {
+    "name": "Oran Berry",
+    "tier": "Healing",
+    "buyPrice": 800,
+    "sellPrice": 700,
+    "notes": "Not every entry has to be profitable. Real data should say so."
+  },
+  {
+    "name": "Pecha Berry",
+    "tier": "Status cure",
+    "buyPrice": 950,
+    "sellPrice": 980,
+    "notes": "Keep notes short. Detailed logic belongs in JS or docs."
+  },
+  {
+    "name": "Sitrus Berry",
+    "tier": "Premium",
+    "buyPrice": 3000,
+    "sellPrice": 3600,
+    "notes": "Ideal placeholder for more advanced calculator output later."
+  }
+]

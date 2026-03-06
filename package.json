@@ -1,0 +1,22 @@
+{
+  "name": "paulus-berry-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static starter for the PaulusBerryCalculator GitHub Pages project.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
+    "check": "npm run format:check && npm run lint"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "eslint": "^10.0.0",
+    "globals": "^16.0.0",
+    "prettier": "^3.0.0"
+  }
+}

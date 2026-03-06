@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Berry Calculator favicon</title>
+  <desc id="desc">A simple berry icon.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#3fb950"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#g)" d="M33 10c-2 6-8 8-14 8 1 8 9 11 14 11 6 0 14-4 15-12-6 1-12-1-15-7Z"/>
+  <path fill="#f78166" d="M32 24c-11 0-20 8-20 18 0 9 7 16 18 16s22-7 22-20c0-7-7-14-20-14Z"/>
+  <circle cx="24" cy="37" r="2" fill="#0d1117"/>
+  <circle cx="36" cy="34" r="2" fill="#0d1117"/>
+  <circle cx="43" cy="43" r="2" fill="#0d1117"/>
+</svg>
