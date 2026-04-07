@@ -1,0 +1,188 @@
+<!-- pages/seeds.html -->
+<!-- v2.0.0-beta -->
+<!-- Flavor-first seed route page for standard cycle profit comparison and shared Shop pricing. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seed Routes · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Compare seed routes by flavor, standard-cycle daily value, and self-sustain status."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="seeds-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">Seed Routes</h1>
+        </div>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a aria-current="page" href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel hero-panel--compact" aria-labelledby="seed-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Seeds</p>
+          <h2 id="seed-hero-heading">Pick a flavor. Compare the standard loop.</h2>
+          <p class="lead">
+            156 plots per character. 16/20h = 1 day, 42/44h = 2 days, 67h = 3 days.
+          </p>
+          <div id="seed-hero-summary" class="hero-pills" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="toolbar-panel stack-md" aria-labelledby="seed-controls-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Flavor board</p>
+            <h2 id="seed-controls-heading">Standard cycle</h2>
+          </div>
+          <div id="seed-price-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <div id="seed-flavor-tabs" class="flavor-tab-row" aria-label="Seed flavor tabs"></div>
+
+        <form id="seed-controls" class="toolbar-grid toolbar-grid--seed-routes" autocomplete="off">
+          <label class="field" for="seed-characters">
+            <span>Characters</span>
+            <input
+              id="seed-characters"
+              name="seed-characters"
+              type="number"
+              min="1"
+              max="9"
+              step="1"
+              value="1"
+            />
+          </label>
+
+          <label class="field" for="seed-very-rate">
+            <span>Very rate</span>
+            <input
+              id="seed-very-rate"
+              name="seed-very-rate"
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              value="30"
+            />
+          </label>
+
+          <label class="field" for="seed-valuation">
+            <span>Value outputs by</span>
+            <select id="seed-valuation" name="seed-valuation">
+              <option value="sell">Sell value</option>
+              <option value="self-use">Self-use value</option>
+            </select>
+          </label>
+
+          <label class="field" for="seed-visibility">
+            <span>Show</span>
+            <select id="seed-visibility" name="seed-visibility">
+              <option value="all">All routes</option>
+              <option value="profitable">Profitable only</option>
+              <option value="sustain">Self-sustain only</option>
+            </select>
+          </label>
+
+          <label class="field" for="seed-orientation">
+            <span>Orientation</span>
+            <select id="seed-orientation" name="seed-orientation">
+              <option value="all">All</option>
+              <option value="pure">Pure</option>
+              <option value="split">Split</option>
+              <option value="side">Side</option>
+            </select>
+          </label>
+
+          <label class="field" for="seed-day-bucket">
+            <span>Standard days</span>
+            <select id="seed-day-bucket" name="seed-day-bucket">
+              <option value="all">All</option>
+              <option value="1">1 day</option>
+              <option value="2">2 day</option>
+              <option value="3">3 day</option>
+            </select>
+          </label>
+
+          <label class="field" for="seed-sort">
+            <span>Sort by</span>
+            <select id="seed-sort" name="seed-sort">
+              <option value="daily-desc">Daily · high to low</option>
+              <option value="cycle-desc">Cycle · high to low</option>
+              <option value="selected-desc">Selected seeds · high to low</option>
+              <option value="growth-asc">Grow time · fastest first</option>
+            </select>
+          </label>
+        </form>
+
+        <p class="toolbar-note">
+          Prices live in Shop. Sell and buy stay separate. Startup seeds are ignored for
+          self-sustain loops; only recurring buyback counts. Use Sell value for cash routes or
+          Self-use value to price harvested seeds by buy-offset.
+        </p>
+      </section>
+
+      <section class="seed-shell stack-md" aria-labelledby="seed-routes-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Routes</p>
+            <h2 id="seed-routes-heading">Make, tool, reuse, sell excess</h2>
+          </div>
+          <div id="seed-results-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <div id="seed-route-results" class="seed-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Flavor first. Standard cycle first.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <div id="seed-route-modal" class="modal" aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal="true"></div>
+      <div
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="seed-route-modal-title"
+      >
+        <button
+          id="seed-route-modal-close"
+          class="modal__close"
+          type="button"
+          aria-label="Close route details"
+        >
+          ×
+        </button>
+        <div id="seed-route-modal-content"></div>
+      </div>
+    </div>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

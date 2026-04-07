@@ -1,0 +1,160 @@
+<!-- pages/leppa.html -->
+<!-- v2.0.0-beta -->
+<!-- Native Leppa planner page for comparing Leppa route families with shared Shop prices and current 30 / 70 rules. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leppa Planner · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Compare native Leppa route families with shared Shop prices, fixed Harvest Tool math, and money-per-day focus."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="leppa-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">Leppa Planner</h1>
+        </div>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a aria-current="page" href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel hero-panel--compact" aria-labelledby="leppa-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Leppa</p>
+          <h2 id="leppa-hero-heading">Compare the core Leppa route families.</h2>
+          <p class="lead">
+            Money-per-day first. Shared Shop prices drive Leppa sells plus support-seed sells and
+            buys.
+          </p>
+          <div id="leppa-hero-summary" class="hero-pills" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="toolbar-panel stack-md" aria-labelledby="leppa-controls-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Leppa routes</p>
+            <h2 id="leppa-controls-heading">Native daily patterns</h2>
+          </div>
+          <div id="leppa-price-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <form class="toolbar-grid toolbar-grid--berry-routes" autocomplete="off">
+          <label class="field" for="leppa-characters">
+            <span>Characters</span>
+            <input
+              id="leppa-characters"
+              name="leppa-characters"
+              type="number"
+              min="1"
+              max="99"
+              step="1"
+              value="9"
+            />
+          </label>
+
+          <label class="field" for="leppa-show">
+            <span>Show</span>
+            <select id="leppa-show" name="leppa-show">
+              <option value="all">All routes</option>
+              <option value="profitable">Profitable only</option>
+            </select>
+          </label>
+
+          <label class="field" for="leppa-family">
+            <span>Family</span>
+            <select id="leppa-family" name="leppa-family">
+              <option value="all">All</option>
+              <option value="standard">Standard support</option>
+              <option value="alt">Alt support</option>
+              <option value="hybrid">Hybrid buy</option>
+              <option value="gtl">Buy-all benchmark</option>
+            </select>
+          </label>
+
+          <label class="field" for="leppa-sort">
+            <span>Sort by</span>
+            <select id="leppa-sort" name="leppa-sort">
+              <option value="daily-desc">Daily value</option>
+              <option value="cycle-desc">Cycle value</option>
+              <option value="leppa-desc">Leppa output</option>
+              <option value="name-asc">Name</option>
+            </select>
+          </label>
+
+          <label class="field field--search" for="leppa-search">
+            <span>Search</span>
+            <input
+              id="leppa-search"
+              name="leppa-search"
+              type="search"
+              placeholder="standard, hybrid, spicy..."
+            />
+          </label>
+        </form>
+
+        <p class="toolbar-note">
+          This tab now uses native daily support math at a shared
+          <strong>9-character</strong> baseline. Harvest Tool stays fixed at <strong>350 ¥</strong>.
+        </p>
+      </section>
+
+      <section class="seed-shell stack-md" aria-labelledby="leppa-results-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Planner</p>
+            <h2 id="leppa-results-heading">Current Leppa route board</h2>
+          </div>
+          <div id="leppa-results-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <div id="leppa-route-results" class="seed-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <div id="leppa-route-modal" class="modal" aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal="true"></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button
+          class="modal__close"
+          id="leppa-route-modal-close"
+          type="button"
+          aria-label="Close Leppa route details"
+        >
+          ×
+        </button>
+        <div id="leppa-route-modal-content"></div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Leppa first. Native support math now.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

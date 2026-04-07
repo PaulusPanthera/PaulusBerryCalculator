@@ -1,0 +1,176 @@
+<!-- pages/berries.html -->
+<!-- v2.0.0-beta -->
+<!-- Berry selling routes page with shared Shop pricing, method switching, and detail modal. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Berry Routes · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Compare berry selling routes with clean buy-seed math and first-pass self-sufficient loops for pure-color berries."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="berries-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">Berry Routes</h1>
+        </div>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a aria-current="page" href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel hero-panel--compact" aria-labelledby="berry-routes-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Berries</p>
+          <h2 id="berry-routes-hero-heading">Sell berries. Compare the sane methods.</h2>
+          <p class="lead">
+            Buy seeds is direct. Self-sufficient currently covers single-color berry loops only.
+          </p>
+          <div id="berry-routes-hero-summary" class="hero-pills" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="toolbar-panel stack-md" aria-labelledby="berry-routes-controls-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Berry board</p>
+            <h2 id="berry-routes-controls-heading">Simple now, deeper later</h2>
+          </div>
+          <div id="berry-routes-price-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <form
+          id="berry-routes-controls"
+          class="toolbar-grid toolbar-grid--berry-routes"
+          autocomplete="off"
+        >
+          <label class="field field--search" for="berry-routes-search">
+            <span>Search</span>
+            <input
+              id="berry-routes-search"
+              name="berry-routes-search"
+              type="search"
+              placeholder="Leppa, EV, pinch..."
+            />
+          </label>
+
+          <label class="field" for="berry-routes-characters">
+            <span>Characters</span>
+            <input
+              id="berry-routes-characters"
+              name="berry-routes-characters"
+              type="number"
+              min="1"
+              max="9"
+              step="1"
+              value="1"
+            />
+          </label>
+
+          <label class="field" for="berry-routes-show">
+            <span>Show</span>
+            <select id="berry-routes-show" name="berry-routes-show">
+              <option value="all">All routes</option>
+              <option value="profitable">Profitable only</option>
+            </select>
+          </label>
+
+          <label class="field" for="berry-routes-method">
+            <span>Method</span>
+            <select id="berry-routes-method" name="berry-routes-method">
+              <option value="all">All</option>
+              <option value="buy">Buy seeds</option>
+              <option value="self">Self-sufficient</option>
+            </select>
+          </label>
+
+          <label class="field" for="berry-routes-days">
+            <span>Standard days</span>
+            <select id="berry-routes-days" name="berry-routes-days">
+              <option value="all">All</option>
+              <option value="1">1 day</option>
+              <option value="2">2 day</option>
+              <option value="3">3 day</option>
+            </select>
+          </label>
+
+          <label class="field" for="berry-routes-sort">
+            <span>Sort by</span>
+            <select id="berry-routes-sort" name="berry-routes-sort">
+              <option value="daily-desc">Daily · high to low</option>
+              <option value="cycle-desc">Cycle · high to low</option>
+              <option value="growth-asc">Grow time · fastest first</option>
+              <option value="name-asc">Name · A to Z</option>
+            </select>
+          </label>
+        </form>
+
+        <p class="toolbar-note">
+          Buy seeds = purchase every cycle and sell all berries. Self-sufficient = first-pass
+          pure-color loop only, with seed prep time and Harvest Tool cost included.
+        </p>
+      </section>
+
+      <section class="berry-routes-shell stack-md" aria-labelledby="berry-routes-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Routes</p>
+            <h2 id="berry-routes-heading">Plant, prep, sell</h2>
+          </div>
+          <div id="berry-routes-results-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <div id="berry-route-results" class="berry-route-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Buy clean. Loop clean. Mixed berry loops later.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <div id="berry-route-modal" class="modal" aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal="true"></div>
+      <div
+        class="modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="berry-route-modal-title"
+      >
+        <button
+          id="berry-route-modal-close"
+          class="modal__close"
+          type="button"
+          aria-label="Close berry route details"
+        >
+          ×
+        </button>
+        <div id="berry-route-modal-content"></div>
+      </div>
+    </div>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

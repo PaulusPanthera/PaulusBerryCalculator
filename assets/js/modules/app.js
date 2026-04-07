@@ -1,82 +1,188 @@
-import { select, renderHTML } from "./dom.js";
-import { formatMoney, escapeHTML } from "./format.js";
+// assets/js/modules/app.js
+// v2.0.0-beta
+// Page wiring for the berry catalog: filters, rendering, summaries, and modal lifecycle.
+import { select } from "./dom.js";
+import { BERRIES } from "./catalog/data.js";
+import {
+  applyCatalogState,
+  getBerryBySlug,
+  getCatalogOptions,
+  getHeroSummary,
+  getSeedHarvestSummary,
+} from "./catalog/logic.js";
+import {
+  renderCatalog,
+  renderFlavorLegend,
+  renderHeroSummary,
+  renderModalContent,
+  renderResultsSummary,
+  renderSelectOptions,
+} from "./catalog/render.js";
 
-const DATA_PATH = "./assets/data/berries.sample.json";
+const SORT_LABELS = {
+  "name-asc": "Name · A → Z",
+  "vendor-desc": "Vendor · high to low",
+  "growth-asc": "Grow time · fastest",
+  "yield-desc": "Yield · highest",
+};
 
-function createBerryCard(berry) {
-  return `
-    <article class="berry-card">
-      <p class="eyebrow">${escapeHTML(berry.tier)}</p>
-      <h3>${escapeHTML(berry.name)}</h3>
-      <p class="muted">${escapeHTML(berry.notes)}</p>
-      <div class="berry-card__meta">
-        <span class="pill">Buy: ${formatMoney(berry.buyPrice)}</span>
-        <span class="pill">Sell: ${formatMoney(berry.sellPrice)}</span>
-      </div>
-    </article>
-  `;
+function getInitialState() {
+  return {
+    query: "",
+    category: "all",
+    growth: "all",
+    flavor: "all",
+    sort: "name-asc",
+  };
 }
 
-function renderSummary(target, berries) {
-  const profitableCount = berries.filter((berry) => berry.sellPrice > berry.buyPrice).length;
+function populateControls(options, nodes) {
+  renderSelectOptions(nodes.category, ["all", ...options.categories], (option) =>
+    option === "all" ? "All categories" : option,
+  );
 
-  renderHTML(
-    target,
-    `
-      <span>Total: ${berries.length}</span>
-      <span>Profitable examples: ${profitableCount}</span>
-    `,
+  renderSelectOptions(nodes.growth, ["all", ...options.growthHours], (option) =>
+    option === "all" ? "All grow times" : `${option}h`,
+  );
+
+  renderSelectOptions(nodes.flavor, ["all", ...options.flavors], (option) =>
+    option === "all" ? "All seed flavors" : `${option[0].toUpperCase()}${option.slice(1)}`,
   );
 }
 
-function renderBerries(target, berries) {
-  if (!berries.length) {
-    renderHTML(
-      target,
-      '<p class="muted">No berries match the current search. Replace this with your own empty state later.</p>',
-    );
+function syncStateFromControls(state, nodes) {
+  state.query = nodes.search.value.trim();
+  state.category = nodes.category.value;
+  state.growth = nodes.growth.value;
+  state.flavor = nodes.flavor.value;
+  state.sort = nodes.sort.value;
+}
+
+function resetControls(nodes) {
+  nodes.search.value = "";
+  nodes.category.value = "all";
+  nodes.growth.value = "all";
+  nodes.flavor.value = "all";
+  nodes.sort.value = "name-asc";
+}
+
+function closeModal(modalNode) {
+  modalNode.classList.remove("is-open");
+  modalNode.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function openModal(modalNode, contentNode, berry) {
+  renderModalContent(contentNode, berry, getSeedHarvestSummary(berry));
+  modalNode.classList.add("is-open");
+  modalNode.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+export function initBerryApp() {
+  const nodes = {
+    search: select("#berry-search"),
+    category: select("#category-filter"),
+    growth: select("#growth-filter"),
+    flavor: select("#flavor-filter"),
+    sort: select("#sort-filter"),
+    clear: select("#clear-filters"),
+    results: select("#berry-results"),
+    heroSummary: select("#hero-summary"),
+    resultsSummary: select("#results-summary"),
+    legend: select("#seed-legend"),
+    modal: select("#berry-modal"),
+    modalContent: select("#modal-content"),
+    modalClose: select("#modal-close"),
+  };
+
+  if (Object.values(nodes).some((node) => node === null)) {
     return;
   }
 
-  renderHTML(target, berries.map(createBerryCard).join(""));
-}
+  const state = getInitialState();
+  const options = getCatalogOptions(BERRIES);
 
-async function loadBerries() {
-  const response = await fetch(DATA_PATH);
-
-  if (!response.ok) {
-    throw new Error(`Could not load berry data from ${DATA_PATH}`);
+  populateControls(options, nodes);
+  renderHeroSummary(nodes.heroSummary, getHeroSummary(BERRIES));
+  if (nodes.legend) {
+    nodes.legend.innerHTML = renderFlavorLegend();
   }
 
-  return response.json();
-}
+  function rerender() {
+    syncStateFromControls(state, nodes);
+    const visibleBerries = applyCatalogState(BERRIES, state);
 
-export async function initBerryApp() {
-  const resultsNode = select("#berry-results");
-  const searchNode = select("#berry-search");
-  const summaryNode = select("#berry-summary");
-
-  if (!resultsNode || !searchNode || !summaryNode) {
-    return;
-  }
-
-  try {
-    const berries = await loadBerries();
-
-    renderSummary(summaryNode, berries);
-    renderBerries(resultsNode, berries);
-
-    searchNode.addEventListener("input", (event) => {
-      const query = event.currentTarget.value.trim().toLowerCase();
-      const filtered = berries.filter((berry) => berry.name.toLowerCase().includes(query));
-
-      renderBerries(resultsNode, filtered);
-    });
-  } catch (error) {
-    console.error(error);
-    renderHTML(
-      resultsNode,
-      '<p class="muted">Sample data failed to load. Start a local server before previewing JSON-driven pages.</p>',
+    renderCatalog(nodes.results, visibleBerries);
+    renderResultsSummary(
+      nodes.resultsSummary,
+      visibleBerries.length,
+      BERRIES.length,
+      SORT_LABELS[state.sort],
     );
   }
+
+  rerender();
+
+  nodes.search.addEventListener("input", rerender);
+  nodes.category.addEventListener("change", rerender);
+  nodes.growth.addEventListener("change", rerender);
+  nodes.flavor.addEventListener("change", rerender);
+  nodes.sort.addEventListener("change", rerender);
+
+  nodes.clear.addEventListener("click", () => {
+    resetControls(nodes);
+    rerender();
+  });
+
+  function openBerryFromTrigger(trigger) {
+    if (!trigger) {
+      return;
+    }
+
+    const berry = getBerryBySlug(BERRIES, trigger.dataset.berryDetails);
+
+    if (!berry) {
+      return;
+    }
+
+    openModal(nodes.modal, nodes.modalContent, berry);
+  }
+
+  nodes.results.addEventListener("click", (event) => {
+    const card = event.target.closest(".catalog-card[data-berry-details]");
+
+    openBerryFromTrigger(card);
+  });
+
+  nodes.results.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    const card = event.target.closest(".catalog-card[data-berry-details]");
+
+    if (!card) {
+      return;
+    }
+
+    event.preventDefault();
+    openBerryFromTrigger(card);
+  });
+
+  nodes.modal.addEventListener("click", (event) => {
+    if (event.target.closest("[data-close-modal='true']")) {
+      closeModal(nodes.modal);
+    }
+  });
+
+  nodes.modalClose.addEventListener("click", () => {
+    closeModal(nodes.modal);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && nodes.modal.classList.contains("is-open")) {
+      closeModal(nodes.modal);
+    }
+  });
 }

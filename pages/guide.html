@@ -1,0 +1,393 @@
+<!-- pages/guide.html -->
+<!-- v2.0.0-beta -->
+<!-- Guide and encyclopedia page for berry basics, timing, routines, and project-specific calculator assumptions. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guide · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Berry farming basics, timing notes, schedule tips, glossary, and calculator-specific assumptions."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Berry guide</p>
+          <h1 class="site-title">Guide & Encyclopedia</h1>
+        </div>
+
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a aria-current="page" href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel hero-panel--compact" aria-labelledby="guide-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Guide</p>
+          <h2 id="guide-hero-heading">Learn the basics, then use the tabs with intent.</h2>
+          <p class="lead">
+            This page gathers the practical farming notes, timing buckets, routine ideas, and
+            calculator assumptions that matter most when you are trying to make sane berry-money
+            decisions.
+          </p>
+          <div class="guide-section-nav" aria-label="Guide sections">
+            <a class="hero-pill" href="#guide-defaults">Calculator defaults</a>
+            <a class="hero-pill" href="#guide-basics">Berry basics</a>
+            <a class="hero-pill" href="#guide-timing">Timing buckets</a>
+            <a class="hero-pill" href="#guide-schedules">Schedules</a>
+            <a class="hero-pill" href="#guide-tips">Tips</a>
+            <a class="hero-pill" href="#guide-glossary">Glossary</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="guide-defaults" class="about-panel stack-md">
+        <p class="eyebrow">Calculator defaults</p>
+        <h2>What this site assumes right now</h2>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <strong>156 plots per character</strong>
+            <span
+              >72 by Mistralton + 84 at Abundant Shrine is the baseline used across the
+              calculators.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>70% plain / 30% very</strong>
+            <span
+              >That is the current working seed split across the project and the value used for
+              breakpoints.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>Harvest Tool = 350</strong>
+            <span>It is fixed everywhere and not configurable on the Prices page.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Money/day first</strong>
+            <span
+              >Standard day buckets stay simple: 16/20h = 1 day, 42/44h = 2 days, 67h = 3
+              days.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section id="guide-basics" class="about-panel stack-md">
+        <p class="eyebrow">Berry basics</p>
+        <h2>The minimum you need to understand before farming seriously</h2>
+        <ul class="check-list">
+          <li>Seeds are the planting input. Every berry uses a 2-seed or 3-seed recipe.</li>
+          <li>
+            Seed flavors are spicy, bitter, sweet, dry, and sour. Each flavor can be plain or very.
+          </li>
+          <li>
+            Harvest Tools turn berries into seeds. One tool is consumed per berry and costs 350.
+          </li>
+          <li>
+            Not every berry is worth harvest tooling for seeds. Cheap 2-seed berries and the
+            stronger 20h support berries matter most.
+          </li>
+          <li>
+            Yield means berries per plot. Growth time means how long the plant must stay alive
+            before it can be harvested.
+          </li>
+          <li>
+            You need a watering can, seeds to start, and enough consistency to hit your watering and
+            harvest windows.
+          </li>
+        </ul>
+        <div class="guide-callout">
+          <strong>Practical start:</strong>
+          Buy your first seed stock from GTL, get comfortable with a few seed farms, then expand
+          into berry or Leppa loops after you understand your timing.
+        </div>
+      </section>
+
+      <section id="guide-timing" class="about-panel stack-md">
+        <p class="eyebrow">Timing buckets</p>
+        <h2>The grow-time families you keep seeing across the site</h2>
+        <div class="guide-table-wrap">
+          <table class="guide-table">
+            <thead>
+              <tr>
+                <th>Bucket</th>
+                <th>Growth</th>
+                <th>First water</th>
+                <th>Later water</th>
+                <th>Harvest by</th>
+                <th>Typical yield</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Fast berries</td>
+                <td>16h</td>
+                <td>Within 7h</td>
+                <td>Within 12h from the last safe point</td>
+                <td>Within 24h</td>
+                <td>3 to 6</td>
+              </tr>
+              <tr>
+                <td>20h support berries</td>
+                <td>20h</td>
+                <td>Within 7h</td>
+                <td>Within 12h</td>
+                <td>Within 28h</td>
+                <td>4 to 7</td>
+              </tr>
+              <tr>
+                <td>Mid berries</td>
+                <td>42h / 44h</td>
+                <td>Within 8h</td>
+                <td>Every 12 to 15h</td>
+                <td>Within 50h / 52h</td>
+                <td>7 to 10</td>
+              </tr>
+              <tr>
+                <td>Long berries</td>
+                <td>67h</td>
+                <td>Within 8h</td>
+                <td>Every 12 to 15h</td>
+                <td>Within 75h</td>
+                <td>10 to 13</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="toolbar-note">
+          Missing the safe watering or harvest window costs yield fast. The guide material this
+          project is based on treats 8 hours as the universal harvest grace window and uses 12 to 15
+          hours as the practical repeat-watering rhythm for longer berries.
+        </p>
+      </section>
+
+      <section id="guide-seed-farming" class="about-panel stack-md">
+        <p class="eyebrow">Seed farming basics</p>
+        <h2>Why some seed farms are much more realistic than others</h2>
+        <ul class="check-list">
+          <li>
+            16h berries are the workhorse for straight seed farming. They are simple, quick, and
+            easier to keep on schedule.
+          </li>
+          <li>
+            The 3× plain recipe and the 1 plain + 1 very recipe do different jobs. One favors plain
+            sustainability, the other favors plain excess while keeping the loop alive.
+          </li>
+          <li>
+            20h berries like Aguav and Mago produce more berries per plot, but they also put
+            pressure on your very-seed economy.
+          </li>
+          <li>
+            If the buy price of a seed gets too high, farming your own seed can beat buying it. If
+            it gets too low, buying can be the sane play.
+          </li>
+          <li>
+            The BerryDex breakpoint block exists for exactly that question: when is buying berries
+            and harvest tooling them better than buying seeds directly?
+          </li>
+        </ul>
+      </section>
+
+      <section id="guide-schedules" class="about-panel stack-md">
+        <p class="eyebrow">Schedules</p>
+        <h2>Routine ideas that normal humans can actually follow</h2>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <strong>16h routes</strong>
+            <span
+              >Great when you can plant before sleep or before work and then clean up within the
+              next day window.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>20h routes</strong>
+            <span
+              >Slightly more forgiving for harvest, but they usually want two touches and more
+              discipline than pure 16h spam.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>42h / 44h routes</strong>
+            <span
+              >Better when you can commit to a repeating every-12-to-15-hour rhythm and want fewer
+              full resets.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>Leppa routines</strong>
+            <span
+              >Either keep the schedule brain-off and stable, or accept more touchpoints because the
+              money/day justifies it for you.</span
+            >
+          </div>
+        </div>
+        <div class="guide-callout">
+          <strong>Most important schedule rule:</strong>
+          plant everything first, then water. Your timer starts when you plant, so wide timing gaps
+          across your fields create future pain.
+        </div>
+      </section>
+
+      <section id="guide-time" class="about-panel stack-md">
+        <p class="eyebrow">Time investment</p>
+        <h2>What a real daily routine tends to cost</h2>
+        <ul class="check-list">
+          <li>Planting a full 156-plot character often lands around 3.5 to 4.5 minutes.</li>
+          <li>Harvesting often lands around 5 to 6.5 minutes.</li>
+          <li>Watering commonly lands around 2.5 to 3.5 minutes per pass.</li>
+          <li>
+            Abundant Shrine encounters, mailing items, buying tools, and swapping characters are the
+            hidden time tax that people underestimate.
+          </li>
+          <li>
+            One full account of three characters can easily become a 45+ minute routine when you
+            include the real overhead.
+          </li>
+        </ul>
+      </section>
+
+      <section id="guide-tips" class="about-panel stack-md">
+        <p class="eyebrow">General tips</p>
+        <h2>Small habits that save a lot of money</h2>
+        <ul class="check-list">
+          <li>
+            Keybind your watering can or Harvest Tool if possible. Menuing slower than necessary
+            adds up hard.
+          </li>
+          <li>
+            Set alarms until the farm becomes muscle memory. Missed timing is one of the biggest
+            hidden profit leaks.
+          </li>
+          <li>Do not overwater. Water once when the plot actually needs it.</li>
+          <li>
+            If a route feels miserable to maintain, that is part of the route value. The cleanest
+            money/day route is not always the best route for you.
+          </li>
+          <li>
+            If seed farming is beating the berry itself by a mile, question why you are farming the
+            berry at all.
+          </li>
+          <li>
+            Use Home to spot strong routes, then open the deeper tabs only when you need the
+            detailed breakdown.
+          </li>
+        </ul>
+      </section>
+
+      <section id="guide-glossary" class="about-panel stack-md">
+        <p class="eyebrow">Glossary</p>
+        <h2>The words used around the calculator</h2>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <strong>Standard day</strong>
+            <span>The simplified money/day bucket used by the site: 1 day, 2 day, or 3 day.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Self-sustain</strong>
+            <span
+              >The loop can keep going without recurring seed buys. Startup stock is ignored for
+              this check.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>Plain swap</strong>
+            <span
+              >A very seed can be replaced by two plain seeds of the same color when the recipe
+              still stays at three seeds or less.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>Breakpoint</strong>
+            <span
+              >The buy price where a berry plus one Harvest Tool becomes equal to the expected value
+              of the harvested seeds.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>Rebuy</strong>
+            <span>A route that still needs recurring buyback pressure in order to keep going.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Money/day first</strong>
+            <span
+              >The current product philosophy: keep the defaults practical for normal users before
+              layering a full /hr simulator on top.</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="about-panel stack-md">
+        <p class="eyebrow">Which tab should I open?</p>
+        <h2>The current site map, but in human words</h2>
+        <div class="guide-grid">
+          <div class="guide-card">
+            <strong>Home</strong
+            ><span>Quick overview of the strongest routes and the best buy-and-tool spots.</span>
+          </div>
+          <div class="guide-card">
+            <strong>BerryDex</strong
+            ><span>Searchable recipe and timing reference with deeper berry detail.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Seeds</strong
+            ><span>Flavor-first seed route board with exact and plain-swap variants.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Berry Routes</strong
+            ><span
+              >Simple berry-selling routes with buy-seed and pure self-sufficient options.</span
+            >
+          </div>
+          <div class="guide-card">
+            <strong>Leppa</strong
+            ><span>Dedicated Leppa planner using the current project rules.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Berry Powder</strong
+            ><span>Berry-to-powder item crafting comparison based on your Prices settings.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Shopping List</strong
+            ><span>Aggregate the seed basket for multiple berry plans and subtract bag stock.</span>
+          </div>
+          <div class="guide-card">
+            <strong>Prices</strong
+            ><span
+              >The shared source of truth for seed, berry, powder, and GTL auto snapshots.</span
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Guide first. Muscle memory second.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

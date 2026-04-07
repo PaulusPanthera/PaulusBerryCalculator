@@ -1,0 +1,163 @@
+<!-- pages/shopping.html -->
+<!-- v2.0.0-beta -->
+<!-- Shopping List planner page for berry cart entries, aggregated seed needs, and Shop-driven buy pricing. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shopping List · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Build a berry shopping list, aggregate seed needs, subtract your bag stock, and price the basket from Shop settings."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="shopping-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">Shopping List</h1>
+        </div>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a aria-current="page" href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel hero-panel--compact" aria-labelledby="shopping-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Shopping</p>
+          <h2 id="shopping-hero-heading">Build the seed basket before you buy.</h2>
+          <p class="lead">
+            Add berry plans, combine all required seeds, subtract what is already in your bag, and
+            price the remaining basket from the shared Shop buy values.
+          </p>
+          <div id="shopping-hero-summary" class="hero-pills" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="toolbar-panel stack-md" aria-labelledby="shopping-controls-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Planner</p>
+            <h2 id="shopping-controls-heading">Add a berry plan</h2>
+          </div>
+          <div class="results-summary">
+            <button id="shopping-reset" class="button button--ghost" type="button">
+              Reset all
+            </button>
+            <span id="shopping-save-status" class="toolbar-note"></span>
+          </div>
+        </div>
+
+        <form class="toolbar-grid toolbar-grid--shopping" autocomplete="off">
+          <label class="field" for="shopping-berry">
+            <span>Berry</span>
+            <select id="shopping-berry" name="shopping-berry"></select>
+          </label>
+
+          <label class="field" for="shopping-method">
+            <span>Recipe mode</span>
+            <select id="shopping-method" name="shopping-method"></select>
+          </label>
+
+          <label class="field" for="shopping-characters">
+            <span>Characters</span>
+            <input
+              id="shopping-characters"
+              name="shopping-characters"
+              type="number"
+              min="1"
+              max="99"
+              step="1"
+              value="1"
+            />
+          </label>
+
+          <label class="field" for="shopping-plantings">
+            <span>Plantings each</span>
+            <input
+              id="shopping-plantings"
+              name="shopping-plantings"
+              type="number"
+              min="1"
+              max="999"
+              step="1"
+              value="1"
+            />
+          </label>
+
+          <div class="toolbar-actions toolbar-actions--shopping">
+            <button id="shopping-add" class="button" type="button">Add to cart</button>
+            <button id="shopping-clear-entries" class="button button--ghost" type="button">
+              Clear cart
+            </button>
+          </div>
+        </form>
+
+        <p class="toolbar-note">
+          One planting means one full 156-plot character run. Recipe mode supports exact and valid
+          plain-swap variants where they exist.
+        </p>
+      </section>
+
+      <section class="seed-shell stack-md" aria-labelledby="shopping-cart-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Cart</p>
+            <h2 id="shopping-cart-heading">Current berry plan</h2>
+          </div>
+          <div id="shopping-cart-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <div id="shopping-cart-results" class="shopping-entry-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shopping-seed-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Basket</p>
+            <h2 id="shopping-seed-heading">Seed shopping basket</h2>
+          </div>
+          <div class="results-summary">
+            <button id="shopping-reset-bag" class="button button--ghost" type="button">
+              Reset bag counts
+            </button>
+            <span id="shopping-seed-summary" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <p class="toolbar-note">
+          “In bag” values reduce what still needs to be bought. Basket cost only prices the missing
+          amount, using the current Shop seed buy values.
+        </p>
+
+        <div id="shopping-seed-basket" class="shopping-seed-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Plan first. Buy cleaner.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

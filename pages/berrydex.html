@@ -1,0 +1,142 @@
+<!-- pages/berrydex.html -->
+<!-- v2.0.0-beta -->
+<!-- BerryDex catalog page with cozy field theme, local berry sprites, filters, and detail modal. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BerryDex · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Browse berries with sprites, prices, seed recipes, grow time, and yield."
+    />
+    <meta name="theme-color" content="#16140f" />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="berrydex-page" data-asset-base="../assets">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">BerryDex</h1>
+        </div>
+
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a aria-current="page" href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel" aria-labelledby="hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">BerryDex</p>
+          <h2 id="hero-heading">Clean berry info, cozy by default.</h2>
+          <p class="lead">Sprites, prices, seeds, timing, and breakpoints in one calm place.</p>
+
+          <div id="hero-summary" class="hero-pills" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="toolbar-panel stack-md" aria-labelledby="catalog-controls-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">BerryDex controls</p>
+            <h2 id="catalog-controls-heading">Find a berry</h2>
+          </div>
+          <div id="results-summary" class="results-summary" aria-live="polite"></div>
+        </div>
+
+        <form id="catalog-controls" class="toolbar-grid" autocomplete="off">
+          <label class="field field--search" for="berry-search">
+            <span>Search</span>
+            <input
+              id="berry-search"
+              name="berry-search"
+              type="search"
+              placeholder="Leppa, paralysis, bitter..."
+            />
+          </label>
+
+          <label class="field" for="category-filter">
+            <span>Category</span>
+            <select id="category-filter" name="category-filter"></select>
+          </label>
+
+          <label class="field" for="growth-filter">
+            <span>Grow time</span>
+            <select id="growth-filter" name="growth-filter"></select>
+          </label>
+
+          <label class="field" for="flavor-filter">
+            <span>Seed flavor</span>
+            <select id="flavor-filter" name="flavor-filter"></select>
+          </label>
+
+          <label class="field" for="sort-filter">
+            <span>Sort by</span>
+            <select id="sort-filter" name="sort-filter">
+              <option value="name-asc">Name · A → Z</option>
+              <option value="vendor-desc">Vendor · high to low</option>
+              <option value="growth-asc">Grow time · fastest first</option>
+              <option value="yield-desc">Yield · highest first</option>
+            </select>
+          </label>
+
+          <div class="toolbar-actions">
+            <button id="clear-filters" class="button button--ghost" type="button">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="catalog-shell stack-md" aria-labelledby="catalog-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">BerryDex</p>
+            <h2 id="catalog-heading">All berries</h2>
+          </div>
+          <div id="seed-legend" class="legend" aria-label="Seed flavor legend"></div>
+        </div>
+
+        <div id="berry-results" class="catalog-grid" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <div id="berry-modal" class="modal" aria-hidden="true">
+      <div class="modal__backdrop" data-close-modal="true"></div>
+      <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button
+          class="modal__close"
+          id="modal-close"
+          type="button"
+          aria-label="Close berry details"
+        >
+          ×
+        </button>
+        <div id="modal-content"></div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Berry facts first. Breakpoints included.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

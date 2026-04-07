@@ -1,0 +1,258 @@
+<!-- pages/shop.html -->
+<!-- v2.0.0-beta -->
+<!-- Shared Shop page for manual, vendor, and auto GTL prices used across the site. -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prices · PaulusBerryCalculator</title>
+    <meta
+      name="description"
+      content="Set shared seed, berry, powder, ingredient, and auto GTL prices for the calculator."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+  </head>
+  <body class="shop-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <div>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">Prices</h1>
+        </div>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a aria-current="page" href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
+          <a href="about.html">About</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel hero-panel--compact" aria-labelledby="shop-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Prices</p>
+          <h2 id="shop-hero-heading">One place for vendor, manual, and GTL prices.</h2>
+          <p class="lead">
+            Harvest Tools stay fixed at 350. Auto mode treats the fetched listed price as buy, then
+            derives net sell after GTL fee.
+          </p>
+          <div id="shop-hero-summary" class="hero-pills" aria-live="polite"></div>
+          <div class="shop-anchor-tabs" aria-label="Jump to shop section">
+            <a class="hero-pill" href="#shop-seeds-heading">Seeds</a>
+            <a class="hero-pill" href="#shop-berries-heading">Berries</a>
+            <a class="hero-pill" href="#shop-powder-heading">Powder</a>
+            <a class="hero-pill" href="#shop-ingredients-heading">Extras</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar-panel stack-md" aria-labelledby="shop-controls-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Sources</p>
+            <h2 id="shop-controls-heading">Modes</h2>
+          </div>
+          <div class="results-summary">
+            <button id="shop-reset" class="button button--ghost" type="button">
+              Reset defaults
+            </button>
+            <span id="shop-save-status" class="toolbar-note"></span>
+          </div>
+        </div>
+
+        <div class="shop-mode-grid shop-mode-grid--two">
+          <label class="field" for="shop-seeds-mode">
+            <span>Seeds</span>
+            <select id="shop-seeds-mode" name="shop-seeds-mode">
+              <option value="manual">Manual</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+
+          <label class="field" for="shop-berries-mode">
+            <span>Berries</span>
+            <select id="shop-berries-mode" name="shop-berries-mode">
+              <option value="vendor">Vendor</option>
+              <option value="manual">Manual</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+        </div>
+
+        <p class="toolbar-note">
+          Harvest Tool is fixed at <strong>350 ¥</strong> everywhere. It is not configurable here.
+        </p>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-auto-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Auto</p>
+            <h2 id="shop-auto-heading">GTL sync</h2>
+          </div>
+        </div>
+
+        <div id="shop-auto-summary" class="hero-pills" aria-live="polite"></div>
+        <p id="shop-auto-powder-note" class="toolbar-note">
+          Powder sync stores snapshots for Powder and Extras, and you can switch those sections
+          between manual and auto below.
+        </p>
+
+        <div class="shop-mode-grid shop-mode-grid--auto">
+          <label class="field" for="shop-auto-source">
+            <span>Source</span>
+            <select id="shop-auto-source" name="shop-auto-source">
+              <option value="fiereu">Fiereu mirror</option>
+              <option value="custom">Custom endpoint</option>
+            </select>
+          </label>
+
+          <label class="field shop-auto-endpoint" for="shop-auto-endpoint">
+            <span>Custom endpoint</span>
+            <input
+              id="shop-auto-endpoint"
+              name="shop-auto-endpoint"
+              type="url"
+              placeholder="https://example.com/api/prices"
+            />
+          </label>
+
+          <div class="shop-auto-actions">
+            <button id="shop-auto-sync" class="button" type="button">Sync auto prices</button>
+          </div>
+        </div>
+
+        <div class="shop-fee-rule">
+          <p class="toolbar-note">
+            Fee rule: <strong>min 100</strong>, then <strong>floor(listed × 5%)</strong>, capped at
+            <strong>25,000</strong>. Example at
+            <strong><span id="shop-fee-preview-listed">5,000</span> ¥</strong>: fee
+            <strong><span id="shop-fee-preview-fee">250</span> ¥</strong>, net sell
+            <strong><span id="shop-fee-preview-sell">4,750</span> ¥</strong>.
+          </p>
+        </div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-seeds-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Seeds</p>
+            <h2 id="shop-seeds-heading">Seed buy and sell prices</h2>
+          </div>
+        </div>
+
+        <div id="seed-price-cards" class="shop-card-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-berries-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Berries</p>
+            <h2 id="shop-berries-heading">Berry prices</h2>
+          </div>
+          <label class="field field--search shop-search" for="berry-price-search">
+            <span>Search</span>
+            <input
+              id="berry-price-search"
+              name="berry-price-search"
+              type="search"
+              placeholder="Leppa, EV, Sweet..."
+            />
+          </label>
+        </div>
+
+        <div id="berry-price-rows" class="shop-row-list" aria-live="polite"></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-powder-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Powder</p>
+            <h2 id="shop-powder-heading">Craft sell prices</h2>
+          </div>
+          <label class="field shop-section-source" for="shop-powder-target-mode">
+            <span>Source</span>
+            <select id="shop-powder-target-mode" name="shop-powder-target-mode">
+              <option value="manual">Manual</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+        </div>
+
+        <p id="shop-powder-summary" class="toolbar-note">
+          Manual source active. Auto sync stores net sell snapshots here when listings are matched.
+        </p>
+        <div id="powder-target-rows" class="shop-row-list" aria-live="polite"></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-ingredients-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Powder extras</p>
+            <h2 id="shop-ingredients-heading">Extra ingredient buy prices</h2>
+          </div>
+          <label class="field shop-section-source" for="shop-powder-ingredient-mode">
+            <span>Source</span>
+            <select id="shop-powder-ingredient-mode" name="shop-powder-ingredient-mode">
+              <option value="manual">Manual</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+        </div>
+
+        <p id="shop-ingredient-summary" class="toolbar-note">
+          Manual source active. These are the non-berry extras. Auto stores listed buy snapshots
+          when available.
+        </p>
+        <div
+          id="powder-ingredient-cards"
+          class="shop-card-grid shop-card-grid--compact"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-powder-berries-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Powder berries</p>
+            <h2 id="shop-powder-berries-heading">Berry ingredient buy shortcuts</h2>
+          </div>
+          <label class="field shop-section-source" for="shop-powder-berry-mode">
+            <span>Source</span>
+            <select id="shop-powder-berry-mode" name="shop-powder-berry-mode">
+              <option value="vendor">Vendor</option>
+              <option value="manual">Manual</option>
+              <option value="auto">Auto</option>
+            </select>
+          </label>
+        </div>
+
+        <p id="shop-powder-berry-summary" class="toolbar-note">
+          Vendor berries source active. Lum and Leppa use this dedicated berry-buy mode for powder
+          crafting.
+        </p>
+        <div id="powder-berry-rows" class="shop-row-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Shared prices. Cleaner tools.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

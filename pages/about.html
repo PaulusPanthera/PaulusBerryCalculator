@@ -1,15 +1,18 @@
+<!-- pages/about.html -->
+<!-- v2.0.0-beta -->
+<!-- Project notes page aligned with the current Home-first navigation and calculator roadmap. -->
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>About · PaulusBerryCalculator</title>
     <meta
       name="description"
-      content="Project notes and workflow guidance for PaulusBerryCalculator."
-    >
-    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="../assets/css/main.css">
+      content="Project notes for Home, BerryDex, route pages, Guide, Shopping List, Berry Powder, and shared Prices."
+    />
+    <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
   </head>
   <body>
     <header class="site-header">
@@ -21,38 +24,86 @@
 
         <nav class="site-nav" aria-label="Primary">
           <a href="../index.html">Home</a>
+          <a href="berrydex.html">BerryDex</a>
+          <a href="seeds.html">Seeds</a>
+          <a href="berries.html">Berry Routes</a>
+          <a href="leppa.html">Leppa</a>
+          <a href="powder.html">Berry Powder</a>
+          <a href="shopping.html">Shopping List</a>
+          <a href="shop.html">Prices</a>
+          <a href="guide.html">Guide</a>
           <a aria-current="page" href="about.html">About</a>
         </nav>
       </div>
     </header>
 
-    <main class="container stack-lg">
-      <section class="card stack-md">
-        <h2>What this project structure is for</h2>
-        <p>
-          A small static app that stays easy to host and easy to understand, while still teaching solid
-          habits: structure, naming, formatting, linting, changelogs, releases, and safe separation of
-          content, styles, scripts, and data.
+    <main class="container page-stack">
+      <section class="about-panel stack-md">
+        <p class="eyebrow">Current scope</p>
+        <h2>Keep it static, readable, and honest.</h2>
+        <p class="lead">
+          Home is the overview. BerryDex is the reference page. Guide gathers the practical
+          knowledge. The calculator tabs stay focused and use shared Prices as the cross-page source
+          of truth.
         </p>
       </section>
 
-      <section class="card stack-md">
-        <h2>Core ideas</h2>
+      <section class="about-panel stack-md">
+        <h2>What is live now</h2>
         <ul class="check-list">
-          <li>Keep deployment simple and static for as long as possible.</li>
-          <li>Keep logic modular: one small file per concern.</li>
-          <li>Keep Git history readable with clear, focused commits.</li>
-          <li>Keep data and calculations separated from UI markup.</li>
+          <li>
+            Home dashboard with top seed routes, berry routes, Leppa, powder picks, and buy-and-tool
+            breakpoints.
+          </li>
+          <li>
+            BerryDex with sprites, grow time, vendor value, recipe, and deeper seed-harvest
+            breakpoint detail.
+          </li>
+          <li>Seed Routes normalized to a simple standard day with flavor-first comparisons.</li>
+          <li>
+            Berry Routes limited to the intentionally simple families: buy every cycle and
+            pure-color self-sufficient loops.
+          </li>
+          <li>Leppa Planner with the current project-native 30/70 assumptions.</li>
+          <li>Berry Powder routes, Shopping List, Guide, and shared Prices.</li>
+          <li>Harvest Tool fixed at 350 everywhere.</li>
         </ul>
       </section>
 
-      <section class="card stack-md">
-        <h2>Next steps</h2>
-        <p>
-          Replace the sample dataset with your real berry inputs, define your first real calculation rules,
-          and expand the JavaScript modules only when the feature set genuinely needs it.
-        </p>
+      <section class="about-panel stack-md">
+        <h2>Base structure</h2>
+        <ul class="check-list">
+          <li>Framework-free HTML, CSS, and modular JavaScript only.</li>
+          <li>
+            Modules stay purpose-specific instead of hiding everything behind giant abstractions.
+          </li>
+          <li>Shared prices live in local storage and are reused across the calculator tabs.</li>
+          <li>
+            Home and Guide help users find answers faster without replacing the deeper route pages.
+          </li>
+        </ul>
+      </section>
+
+      <section class="about-panel stack-md">
+        <h2>Likely next steps</h2>
+        <ul class="check-list">
+          <li>Vendor methods / NPC sale page.</li>
+          <li>Shopping List polish like copy/export and add-from-route shortcuts.</li>
+          <li>
+            Later, a more advanced /hour and time-cost layer without replacing the money/day default
+            view.
+          </li>
+        </ul>
       </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Small feature first. Honest calculator first.</p>
+        <p><span id="current-year"></span> · PaulusBerryCalculator</p>
+      </div>
+    </footer>
+
+    <script type="module" src="../assets/js/main.js"></script>
   </body>
 </html>

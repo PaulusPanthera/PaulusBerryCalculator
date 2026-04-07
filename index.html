@@ -1,67 +1,139 @@
+<!-- index.html -->
+<!-- v2.0.0-beta -->
+<!-- Home dashboard landing page with top routes, current price-source summary, and quick links into the calculator. -->
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>PaulusBerryCalculator</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home · PaulusBerryCalculator</title>
     <meta
       name="description"
-      content="A lean static starter for a berry calculator website with a clean local Git workflow."
-    >
-    <meta name="theme-color" content="#1f6feb">
-    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/css/main.css">
+      content="See the best current seed, berry, Leppa, powder, and breakpoint opportunities at a glance."
+    />
+    <meta name="theme-color" content="#16140f" />
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="assets/css/main.css" />
   </head>
-  <body>
+  <body class="home-page">
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <header class="site-header">
       <div class="container site-header__inner">
         <div>
-          <p class="eyebrow">Private project</p>
-          <h1 class="site-title">PaulusBerryCalculator</h1>
+          <p class="eyebrow">Paulus Berry Calculator</p>
+          <h1 class="site-title">Home</h1>
         </div>
 
         <nav class="site-nav" aria-label="Primary">
           <a aria-current="page" href="index.html">Home</a>
+          <a href="pages/berrydex.html">BerryDex</a>
+          <a href="pages/seeds.html">Seeds</a>
+          <a href="pages/berries.html">Berry Routes</a>
+          <a href="pages/leppa.html">Leppa</a>
+          <a href="pages/powder.html">Berry Powder</a>
+          <a href="pages/shopping.html">Shopping List</a>
+          <a href="pages/shop.html">Prices</a>
+          <a href="pages/guide.html">Guide</a>
           <a href="pages/about.html">About</a>
         </nav>
       </div>
     </header>
 
-    <main id="main-content" class="container stack-lg">
-      <section class="hero card">
-        <div class="stack-md">
-          <p class="eyebrow">Static site starter</p>
-          <h2>Lean structure, clean workflow, no unnecessary overhead</h2>
+    <main id="main-content" class="container page-stack">
+      <section class="hero-panel" aria-labelledby="home-hero-heading">
+        <div class="hero-panel__content stack-md">
+          <p class="eyebrow">Home</p>
+          <h2 id="home-hero-heading">See the best money/day plays at a glance.</h2>
           <p class="lead">
-            A lean starting point for your own berry calculator: plain HTML, CSS, and JS with just enough
-            structure to learn good project habits without overengineering.
+            Top seed routes, berry routes, Leppa, powder, and seed-harvest breakpoints from your
+            current Prices settings.
           </p>
+          <div id="home-summary" class="hero-pills" aria-live="polite"></div>
         </div>
       </section>
 
-      <section class="card stack-md" aria-labelledby="berries-heading">
-        <div class="section-heading">
+      <section class="toolbar-panel stack-md" aria-labelledby="home-tools-heading">
+        <div class="section-heading section-heading--tight">
           <div>
-            <p class="eyebrow">Data-driven demo</p>
-            <h2 id="berries-heading">Sample berry dataset</h2>
+            <p class="eyebrow">Useful next clicks</p>
+            <h2 id="home-tools-heading">Start from the overview, then drill down</h2>
           </div>
-          <div class="pill-row" id="berry-summary" aria-live="polite"></div>
         </div>
 
-        <label class="field" for="berry-search">
-          <span>Search berries</span>
-          <input id="berry-search" name="berry-search" type="search" placeholder="Try leppa, oran, cheri...">
-        </label>
+        <div id="home-quick-links" class="home-link-grid"></div>
+        <div id="home-source-summary" class="hero-pills" aria-live="polite"></div>
+      </section>
 
-        <div id="berry-results" class="grid" aria-live="polite"></div>
+      <section class="about-panel stack-md" aria-labelledby="home-seeds-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Most profitable seeds</p>
+            <h2 id="home-seeds-heading">Top seed routes right now</h2>
+          </div>
+          <a class="button button--ghost" href="pages/seeds.html">Open Seeds</a>
+        </div>
+        <div id="home-seed-results" class="home-list" aria-live="polite"></div>
+      </section>
+
+      <section class="about-panel stack-md" aria-labelledby="home-berries-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Most profitable berry routes</p>
+            <h2 id="home-berries-heading">Top berry routes right now</h2>
+          </div>
+          <a class="button button--ghost" href="pages/berries.html">Open Berry Routes</a>
+        </div>
+        <div id="home-berry-results" class="home-list" aria-live="polite"></div>
+      </section>
+
+      <div class="home-two-up">
+        <section class="about-panel stack-md" aria-labelledby="home-leppa-heading">
+          <div class="section-heading section-heading--tight">
+            <div>
+              <p class="eyebrow">Leppa</p>
+              <h2 id="home-leppa-heading">Best current Leppa route</h2>
+            </div>
+            <a class="button button--ghost" href="pages/leppa.html">Open Leppa</a>
+          </div>
+          <div id="home-leppa-best"></div>
+        </section>
+
+        <section class="about-panel stack-md" aria-labelledby="home-powder-heading">
+          <div class="section-heading section-heading--tight">
+            <div>
+              <p class="eyebrow">Berry Powder</p>
+              <h2 id="home-powder-heading">Best powder routes by target</h2>
+            </div>
+            <a class="button button--ghost" href="pages/powder.html">Open Berry Powder</a>
+          </div>
+          <label class="field" for="home-powder-target">
+            <span>Craft target</span>
+            <select id="home-powder-target" name="home-powder-target"></select>
+          </label>
+          <div id="home-powder-results" class="home-list" aria-live="polite"></div>
+        </section>
+      </div>
+
+      <section class="about-panel stack-md" aria-labelledby="home-breakpoints-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Seed-harvest breakpoints</p>
+            <h2 id="home-breakpoints-heading">Best berries to buy and Harvest Tool</h2>
+          </div>
+          <a class="button button--ghost" href="pages/berrydex.html">Open BerryDex</a>
+        </div>
+        <p class="toolbar-note">
+          This compares the current berry buy source plus the fixed 350 Harvest Tool cost against
+          the expected seed buy value under the current 70% plain / 30% very split.
+        </p>
+        <div id="home-breakpoint-results" class="home-list" aria-live="polite"></div>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p>Built locally, versioned with Git, and ready for static publishing.</p>
+        <p>Home first. Drill down only when you need detail.</p>
         <p><span id="current-year"></span> · PaulusBerryCalculator</p>
       </div>
     </footer>
