@@ -25,7 +25,7 @@ function renderQuickShoppingButton(route) {
       class="button button--ghost quick-shopping-button"
       type="button"
       data-shopping-add-berry="${escapeHTML(route.berry.slug)}"
-      data-shopping-method-key="exact"
+      data-shopping-method-key="${escapeHTML(route.recipeMethodKey || "best")}"
       data-shopping-label="${escapeHTML(route.berry.shortName)}"
       aria-label="Add one character of ${escapeHTML(route.berry.shortName)} seeds to Shopping List"
     >
@@ -97,6 +97,7 @@ export function renderPowderRouteCards(target, routes) {
         <div class="seed-method-strip">
           <span class="seed-method-chip seed-method-chip--${escapeHTML(badgeTone)}">${escapeHTML(status)}</span>
           <span class="seed-method-chip">${escapeHTML(String(route.standardDays))}d standard</span>
+          <span class="seed-method-chip">${escapeHTML(route.recipeMethodLabel || "Exact")}</span>
         </div>
 
         <div class="seed-preview-grid">
@@ -146,7 +147,7 @@ export function renderPowderModal(route) {
           <h3>Costs</h3>
           <div class="seed-line-list">
             <div class="seed-line-item">
-              <span>Plant cost</span>
+              <span>Plant cost · ${escapeHTML(route.recipeMethodLabel || "Exact")}</span>
               <strong>${escapeHTML(formatMoney(Math.round(route.plantCost)))}</strong>
             </div>
             ${renderIngredientLine(route.ingredient1)}

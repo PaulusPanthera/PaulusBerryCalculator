@@ -91,13 +91,27 @@ function getRecipeMethods(berry) {
       variants.set(signature, {
         key: `swap-${token.flavor}-${index}`,
         kind: "plain-swap",
-        label: "Plain swap",
+        label: "Very + 2 plain",
         recipe: replacement,
       });
     }
   });
 
   return [...methods, ...variants.values()];
+}
+
+function getRecipeSeedCost(recipe, priceState) {
+  return recipe.reduce((sum, token) => {
+    const parsed = parseSeedToken(token);
+    return sum + getSeedPrice(priceState, parsed.flavor, parsed.type, "buy");
+  }, 0);
+}
+
+function getCheapestRecipeMethod(berry, priceState) {
+  return [...getRecipeMethods(berry)].sort(
+    (left, right) =>
+      getRecipeSeedCost(left.recipe, priceState) - getRecipeSeedCost(right.recipe, priceState),
+  )[0];
 }
 
 function normalizeEntry(entry) {
@@ -183,6 +197,11 @@ export function getShoppingBerryOptions() {
 export function getShoppingMethodOptions(berrySlug) {
   const berry = BERRIES.find((candidate) => candidate.slug === berrySlug) || BERRIES[0];
   return getRecipeMethods(berry);
+}
+
+export function getCheapestShoppingMethodKey(berrySlug, priceState = getPriceState()) {
+  const berry = BERRIES.find((candidate) => candidate.slug === berrySlug) || BERRIES[0];
+  return getCheapestRecipeMethod(berry, priceState)?.key || "exact";
 }
 
 function getEntrySeedCounts(recipe, totalPlots) {

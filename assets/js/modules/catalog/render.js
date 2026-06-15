@@ -70,7 +70,7 @@ function renderLegendItem(flavor) {
   `;
 }
 
-function renderQuickShoppingButton(berry, methodKey = "exact") {
+function renderQuickShoppingButton(berry, methodKey = "best") {
   return `
     <button
       class="button button--ghost quick-shopping-button"
@@ -82,6 +82,61 @@ function renderQuickShoppingButton(berry, methodKey = "exact") {
     >
       + 1 char seeds
     </button>
+  `;
+}
+
+function getAlternativeSeedRecipes(berry) {
+  if (berry.seedRecipe.length !== 2) {
+    return [];
+  }
+
+  const alternates = new Map();
+
+  berry.seedRecipe.forEach((seedLabel, index) => {
+    const { kind, flavor } = parseSeedLabel(seedLabel);
+
+    if (kind !== "very") {
+      return;
+    }
+
+    const flavorLabel = `${flavor[0].toUpperCase()}${flavor.slice(1)}`;
+    const replacement = [
+      ...berry.seedRecipe.slice(0, index),
+      `Plain ${flavorLabel}`,
+      `Plain ${flavorLabel}`,
+      ...berry.seedRecipe.slice(index + 1),
+    ];
+
+    if (replacement.length > 3) {
+      return;
+    }
+
+    const signature = [...replacement].sort().join("|");
+
+    if (!alternates.has(signature)) {
+      alternates.set(signature, replacement);
+    }
+  });
+
+  return [...alternates.values()];
+}
+
+function renderAlternativeSeedRecipes(berry) {
+  const alternates = getAlternativeSeedRecipes(berry);
+
+  if (alternates.length === 0) {
+    return "";
+  }
+
+  return `
+    <p class="muted">Also valid:</p>
+    ${alternates
+      .map(
+        (recipe) => `
+          <div class="recipe-list recipe-list--alternate">${recipe.map(renderRecipeChip).join("")}</div>
+        `,
+      )
+      .join("")}
   `;
 }
 
@@ -159,6 +214,7 @@ function createBerryCard(berry) {
           <span class="recipe-block__count">${berry.seedRecipe.length} seeds</span>
         </div>
         <div class="recipe-list">${berry.seedRecipe.map(renderRecipeChip).join("")}</div>
+        ${renderAlternativeSeedRecipes(berry)}
       </div>
     </article>
   `;
@@ -272,6 +328,7 @@ export function renderModalContent(target, berry, seedHarvest) {
               <span class="recipe-block__count">${berry.seedRecipe.length} seeds</span>
             </div>
             <div class="recipe-list">${berry.seedRecipe.map(renderRecipeChip).join("")}</div>
+            ${renderAlternativeSeedRecipes(berry)}
             <p class="muted">Yield spread: ${formatYieldProfile(berry.yieldProfile)}</p>
           </div>
 

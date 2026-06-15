@@ -3,6 +3,7 @@
 // Global quick-add wiring that lets berry cards add one full character of seeds to the Shopping List.
 import {
   addShoppingEntry,
+  getCheapestShoppingMethodKey,
   getShoppingMethodOptions,
   getShoppingState,
   saveShoppingState,
@@ -18,8 +19,13 @@ function resolveMethodKey(berrySlug, requestedMethodKey) {
   const methods = getShoppingMethodOptions(berrySlug);
   const fallback = methods[0]?.key || "exact";
 
-  if (!requestedMethodKey || requestedMethodKey === "buy" || requestedMethodKey === "self") {
-    return fallback;
+  if (
+    !requestedMethodKey ||
+    requestedMethodKey === "best" ||
+    requestedMethodKey === "buy" ||
+    requestedMethodKey === "self"
+  ) {
+    return getCheapestShoppingMethodKey(berrySlug);
   }
 
   if (methods.some((method) => method.key === requestedMethodKey)) {

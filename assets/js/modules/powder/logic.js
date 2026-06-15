@@ -2,6 +2,7 @@
 // v2.0.0-beta
 // Calculations for berry powder crafting routes with shared Shop prices.
 import { BERRIES } from "../catalog/data.js";
+import { FLAVOR_META } from "../pricing/defaults.js";
 import {
   getPowderBerryBuyPrice,
   getPowderIngredientPrice,
@@ -24,13 +25,66 @@ function parseSeed(seedText) {
   return { type: type === "very" ? "very" : "plain", flavor };
 }
 
-function getPlantCost(priceState, berry, totalPlots) {
-  const unitCost = berry.seedRecipe.reduce((sum, seedText) => {
+function getRecipeMethods(berry) {
+  const baseRecipe = berry.seedRecipe;
+  const methods = [{ key: "exact", kind: "exact", label: "Exact", recipe: baseRecipe }];
+
+  if (baseRecipe.length !== 2) {
+    return methods;
+  }
+
+  const variants = new Map();
+  const recipeTokens = baseRecipe.map(parseSeed);
+
+  recipeTokens.forEach((token, index) => {
+    if (token.type !== "very") {
+      return;
+    }
+
+    const replacement = [
+      ...baseRecipe.slice(0, index),
+      `Plain ${FLAVOR_META[token.flavor].label}`,
+      `Plain ${FLAVOR_META[token.flavor].label}`,
+      ...baseRecipe.slice(index + 1),
+    ];
+
+    if (replacement.length > 3) {
+      return;
+    }
+
+    const signature = [...replacement].sort().join("|");
+
+    if (!variants.has(signature)) {
+      variants.set(signature, {
+        key: `swap-${token.flavor}-${index}`,
+        kind: "plain-swap",
+        label: "Very + 2 plain",
+        recipe: replacement,
+      });
+    }
+  });
+
+  return [...methods, ...variants.values()];
+}
+
+function getRecipeUnitCost(priceState, recipe) {
+  return recipe.reduce((sum, seedText) => {
     const parsed = parseSeed(seedText);
     return sum + getSeedPrice(priceState, parsed.flavor, parsed.type, "buy");
   }, 0);
+}
 
-  return unitCost * totalPlots;
+function getPlantCost(priceState, berry, totalPlots) {
+  const method = [...getRecipeMethods(berry)].sort(
+    (left, right) =>
+      getRecipeUnitCost(priceState, left.recipe) - getRecipeUnitCost(priceState, right.recipe),
+  )[0];
+  const unitCost = getRecipeUnitCost(priceState, method.recipe);
+
+  return {
+    method,
+    plantCost: unitCost * totalPlots,
+  };
 }
 
 function getBerryBySlug(slug) {
@@ -61,7 +115,8 @@ function buildPowderRoute(priceState, berry, target, characters) {
   const itemSell = getPowderTargetPrice(priceState, target.priceKey);
   const ingredient1 = getIngredientBreakdown(priceState, target.ingredient1, itemYield);
   const ingredient2 = getIngredientBreakdown(priceState, target.ingredient2, itemYield);
-  const plantCost = getPlantCost(priceState, berry, totalPlots);
+  const plant = getPlantCost(priceState, berry, totalPlots);
+  const plantCost = plant.plantCost;
   const totalCost = plantCost + (ingredient1?.cost ?? 0) + (ingredient2?.cost ?? 0);
   const revenue = itemYield * itemSell;
   const cycleValue = revenue - totalCost;
@@ -80,6 +135,9 @@ function buildPowderRoute(priceState, berry, target, characters) {
     ingredient1,
     ingredient2,
     plantCost,
+    recipe: plant.method.recipe,
+    recipeMethodKey: plant.method.key,
+    recipeMethodLabel: plant.method.label,
     totalCost,
     revenue,
     cycleValue,

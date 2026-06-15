@@ -21,7 +21,7 @@ function renderQuickShoppingButton(route) {
       class="button button--ghost quick-shopping-button"
       type="button"
       data-shopping-add-berry="${escapeHTML(route.berrySlug)}"
-      data-shopping-method-key="exact"
+      data-shopping-method-key="${escapeHTML(route.shoppingMethodKey || "best")}"
       data-shopping-label="${escapeHTML(route.shortName)}"
       aria-label="Add one character of ${escapeHTML(route.shortName)} seeds to Shopping List"
     >
@@ -175,7 +175,7 @@ function createBerryModalContent(group) {
           <div class="recipe-block recipe-block--modal">
             <div class="recipe-block__head">
               <h4>Berry recipe</h4>
-              <span class="recipe-block__count">${route.recipe.length} seeds</span>
+              <span class="recipe-block__count">${escapeHTML(route.recipeMethodLabel || "Exact")} · ${route.recipe.length} seeds</span>
             </div>
             <div class="recipe-list">${route.recipe.map((token) => renderRecipeChip(token)).join("")}</div>
             <p class="muted">${route.isSelfSufficient ? "This bundle grows the needed seeds first, then plants the berry." : "This method buys the recipe every cycle and sells every harvested berry."}</p>
@@ -265,7 +265,7 @@ function renderBerryCard(group) {
       <section class="berry-route-card__recipe-preview">
         <div class="seed-panel__head">
           <h4>Berry recipe</h4>
-          <span>${escapeHTML(String(route.recipe.length))} seeds</span>
+          <span>${escapeHTML(route.recipeMethodLabel || "Exact")} · ${escapeHTML(String(route.recipe.length))} seeds</span>
         </div>
         <div class="seed-chip-list">
           ${route.recipe.map((token) => renderRecipeChip(token)).join("")}

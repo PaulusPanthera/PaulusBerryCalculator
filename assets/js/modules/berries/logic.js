@@ -180,11 +180,21 @@ function getSeedSpendPerCycle(recipeTokens, totalPlots, priceState) {
   );
 }
 
+function getCheapestSeedMethod(berry, totalPlots, priceState) {
+  return [...getSeedMethodOptions(berry)].sort(
+    (left, right) =>
+      getSeedSpendPerCycle(left.recipe, totalPlots, priceState) -
+      getSeedSpendPerCycle(right.recipe, totalPlots, priceState),
+  )[0];
+}
+
 function createBuySeedsRoute(berry, totalPlots, totalCharacters, priceState) {
   const totalBerries = berry.yieldPerPlot * totalPlots;
   const standardDays = getStandardDaysForGrowth(berry.growthHours);
   const sellPrice = getBerryPrice(priceState, berry, "sell");
-  const seedSpend = getSeedSpendPerCycle(berry.seedRecipe, totalPlots, priceState);
+  const buyMethod = getCheapestSeedMethod(berry, totalPlots, priceState);
+  const recipe = buyMethod.recipe;
+  const seedSpend = getSeedSpendPerCycle(recipe, totalPlots, priceState);
   const revenue = totalBerries * sellPrice;
   const cycleValue = revenue - seedSpend;
   const dailyValue = cycleValue / standardDays;
@@ -194,7 +204,10 @@ function createBuySeedsRoute(berry, totalPlots, totalCharacters, priceState) {
     routeKey: `${berry.slug}::buy`,
     methodKey: "buy",
     methodLabel: "Buy seeds",
-    methodSubtitle: "Buy the recipe every cycle",
+    methodSubtitle:
+      buyMethod.kind === "plain-swap"
+        ? "Buy the cheaper Very + 2 plain recipe"
+        : "Buy the recipe every cycle",
     shortName: berry.shortName,
     category: berry.category,
     effect: berry.effect,
@@ -208,8 +221,11 @@ function createBuySeedsRoute(berry, totalPlots, totalCharacters, priceState) {
     standardDays,
     bundleDays: standardDays,
     totalPlots,
-    recipe: berry.seedRecipe,
-    recipeBreakdown: getRecipeBreakdown(berry.seedRecipe, totalPlots, priceState),
+    recipe,
+    recipeMethodKey: buyMethod.key,
+    recipeMethodLabel: buyMethod.kind === "plain-swap" ? "Very + 2 plain" : "Exact",
+    shoppingMethodKey: buyMethod.key,
+    recipeBreakdown: getRecipeBreakdown(recipe, totalPlots, priceState),
     seedSpend,
     revenue,
     cycleValue,
@@ -222,8 +238,15 @@ function createBuySeedsRoute(berry, totalPlots, totalCharacters, priceState) {
   };
 }
 
-function createSelfSufficientRoute(berry, totalPlots, totalCharacters, priceState, veryRate) {
-  const recipeTokens = berry.seedRecipe.map(parseSeedToken);
+function createSelfSufficientRouteForMethod(
+  berry,
+  targetMethod,
+  totalPlots,
+  totalCharacters,
+  priceState,
+  veryRate,
+) {
+  const recipeTokens = targetMethod.recipe.map(parseSeedToken);
   const recipeCounts = getRecipeCounts(recipeTokens);
   const activeFlavors = getUniqueFlavors(recipeCounts);
 
@@ -261,7 +284,7 @@ function createSelfSufficientRoute(berry, totalPlots, totalCharacters, priceStat
 
     return {
       berrySlug: berry.slug,
-      routeKey: `${berry.slug}::self::${candidate.routeKey}`,
+      routeKey: `${berry.slug}::self::${targetMethod.key}::${candidate.routeKey}`,
       methodKey: "self",
       methodLabel: "Self-sufficient",
       methodSubtitle: "Grow seeds first, then grow berries",
@@ -278,8 +301,11 @@ function createSelfSufficientRoute(berry, totalPlots, totalCharacters, priceStat
       standardDays: berryDays,
       bundleDays,
       totalPlots,
-      recipe: berry.seedRecipe,
-      recipeBreakdown: getRecipeBreakdown(berry.seedRecipe, totalPlots, priceState),
+      recipe: targetMethod.recipe,
+      recipeMethodKey: targetMethod.key,
+      recipeMethodLabel: targetMethod.kind === "plain-swap" ? "Very + 2 plain" : "Exact",
+      shoppingMethodKey: targetMethod.key,
+      recipeBreakdown: getRecipeBreakdown(targetMethod.recipe, totalPlots, priceState),
       seedSpend: 0,
       revenue,
       cycleValue,
@@ -311,6 +337,22 @@ function createSelfSufficientRoute(berry, totalPlots, totalCharacters, priceStat
   });
 
   return routes.sort((left, right) => right.dailyValue - left.dailyValue)[0];
+}
+
+function createSelfSufficientRoute(berry, totalPlots, totalCharacters, priceState, veryRate) {
+  return getSeedMethodOptions(berry)
+    .map((targetMethod) =>
+      createSelfSufficientRouteForMethod(
+        berry,
+        targetMethod,
+        totalPlots,
+        totalCharacters,
+        priceState,
+        veryRate,
+      ),
+    )
+    .filter(Boolean)
+    .sort((left, right) => right.dailyValue - left.dailyValue)[0];
 }
 
 function getMethodRoutes(berry, totalPlots, totalCharacters, priceState, veryRate) {
