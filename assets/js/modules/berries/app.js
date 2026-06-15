@@ -104,6 +104,10 @@ export function initBerryRoutesApp() {
   });
 
   nodes.results.addEventListener("click", (event) => {
+    if (event.target.closest("[data-shopping-add-berry]")) {
+      return;
+    }
+
     const methodButton = event.target.closest("[data-berry-method][data-berry-slug]");
     if (methodButton) {
       const slug = methodButton.dataset.berrySlug;
@@ -127,7 +131,7 @@ export function initBerryRoutesApp() {
 
   nodes.results.addEventListener("keydown", (event) => {
     const card = event.target.closest("[data-berry-route-details]");
-    if (!card) {
+    if (!card || event.target.closest("[data-shopping-add-berry]")) {
       return;
     }
     if (event.key === "Enter" || event.key === " ") {

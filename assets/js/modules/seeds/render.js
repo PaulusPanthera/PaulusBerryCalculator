@@ -14,6 +14,21 @@ import {
 import { FLAVOR_META } from "../pricing/defaults.js";
 import { getSeedPriceSummary } from "../pricing/store.js";
 
+function renderQuickShoppingButton(route) {
+  return `
+    <button
+      class="button button--ghost quick-shopping-button"
+      type="button"
+      data-shopping-add-berry="${escapeHTML(route.berrySlug)}"
+      data-shopping-method-key="${escapeHTML(route.methodKey)}"
+      data-shopping-label="${escapeHTML(route.shortName)}"
+      aria-label="Add one character of ${escapeHTML(route.shortName)} seeds to Shopping List"
+    >
+      + 1 char seeds
+    </button>
+  `;
+}
+
 function renderRecipeChip(token, activeFlavor) {
   const [type, flavor] = token.toLowerCase().split(" ");
   const meta = FLAVOR_META[flavor];
@@ -309,9 +324,12 @@ function renderRouteCard(group, flavor) {
           <p class="seed-route-card__family">${escapeHTML(route.category)}</p>
         </div>
 
-        <div class="seed-route-card__daily ${dailyTone}">
-          <span>${escapeHTML(flavor === "all" ? `Best ${labels.dailyLabel.toLowerCase()}` : labels.dailyLabel)}</span>
-          <strong>${escapeHTML(formatSignedMoney(Math.round(headlineRoute.dailyValue)))}</strong>
+        <div class="seed-route-card__actions">
+          <div class="seed-route-card__daily ${dailyTone}">
+            <span>${escapeHTML(flavor === "all" ? `Best ${labels.dailyLabel.toLowerCase()}` : labels.dailyLabel)}</span>
+            <strong>${escapeHTML(formatSignedMoney(Math.round(headlineRoute.dailyValue)))}</strong>
+          </div>
+          ${renderQuickShoppingButton(route)}
         </div>
       </div>
 

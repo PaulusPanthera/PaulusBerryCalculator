@@ -70,6 +70,21 @@ function renderLegendItem(flavor) {
   `;
 }
 
+function renderQuickShoppingButton(berry, methodKey = "exact") {
+  return `
+    <button
+      class="button button--ghost quick-shopping-button"
+      type="button"
+      data-shopping-add-berry="${escapeHTML(berry.slug)}"
+      data-shopping-method-key="${escapeHTML(methodKey)}"
+      data-shopping-label="${escapeHTML(berry.shortName)}"
+      aria-label="Add one character of ${escapeHTML(berry.shortName)} seeds to Shopping List"
+    >
+      + 1 char seeds
+    </button>
+  `;
+}
+
 function renderFactChip(label, value) {
   return `
     <div class="fact-chip">
@@ -124,7 +139,10 @@ function createBerryCard(berry) {
           <p class="catalog-card__category">${escapeHTML(berry.category)}</p>
         </div>
 
-        <span class="catalog-card__vendor">${formatMoney(berry.vendorPrice)}</span>
+        <div class="catalog-card__actions">
+          <span class="catalog-card__vendor">${formatMoney(berry.vendorPrice)}</span>
+          ${renderQuickShoppingButton(berry)}
+        </div>
       </div>
 
       <p class="catalog-card__effect">${escapeHTML(berry.effect)}</p>
@@ -196,8 +214,8 @@ export function renderModalContent(target, berry, seedHarvest) {
     seedHarvest.currentTotalCost > seedHarvest.expectedSeedBuyValue ? " is-negative" : "";
   const breakdownSummary = renderBreakdownSummary(seedHarvest);
   const breakpointNote = seedHarvest.isBlended
-    ? "Mixed-output berry: color odds are weighted by the recipe itself (Plain = 1 point, Very = 2 points), and only colors with a Very seed in the recipe can roll Very outputs."
-    : "Pure-color berry: this breakpoint compares one harvested seed per berry against the current Shop seed buys, with Very output only available when the recipe itself contains a Very seed.";
+    ? "Mixed-output berry: color odds are weighted by the recipe itself (Plain = 1 point, Very = 2 points); colors with 2+ points split into Plain/Very outputs."
+    : "Pure-color berry: this breakpoint compares one harvested seed per berry against the current Shop seed buys; colors with 2+ points split into Plain/Very outputs.";
 
   target.innerHTML = `
     <div class="modal-layout">
@@ -218,7 +236,10 @@ export function renderModalContent(target, berry, seedHarvest) {
           <p class="modal-headline__effect">${escapeHTML(berry.effect)}</p>
         </div>
 
-        <div class="modal-price">${formatMoney(berry.vendorPrice)}</div>
+        <div class="modal-headline__actions">
+          <div class="modal-price">${formatMoney(berry.vendorPrice)}</div>
+          ${renderQuickShoppingButton(berry)}
+        </div>
       </div>
 
       <div class="modal-grid">

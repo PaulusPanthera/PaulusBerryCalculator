@@ -19,6 +19,21 @@ function renderStat(label, value, tone = "default") {
   `;
 }
 
+function renderQuickShoppingButton(route) {
+  return `
+    <button
+      class="button button--ghost quick-shopping-button"
+      type="button"
+      data-shopping-add-berry="${escapeHTML(route.berry.slug)}"
+      data-shopping-method-key="exact"
+      data-shopping-label="${escapeHTML(route.berry.shortName)}"
+      aria-label="Add one character of ${escapeHTML(route.berry.shortName)} seeds to Shopping List"
+    >
+      + 1 char seeds
+    </button>
+  `;
+}
+
 function renderIngredientLine(entry) {
   if (!entry) return "";
   return `
@@ -70,9 +85,12 @@ export function renderPowderRouteCards(target, routes) {
             <h3>${escapeHTML(route.berry.shortName)}</h3>
             <p class="seed-route-card__subtitle">${escapeHTML(route.berry.category)} · ${escapeHTML(formatHours(route.berry.growthHours))}</p>
           </div>
-          <div class="seed-route-card__value ${route.dailyValue < 0 ? "is-negative" : ""}">
-            <span>Daily</span>
-            <strong>${escapeHTML(formatSignedMoney(Math.round(route.dailyValue)))}</strong>
+          <div class="seed-route-card__actions">
+            <div class="seed-route-card__value ${route.dailyValue < 0 ? "is-negative" : ""}">
+              <span>Daily</span>
+              <strong>${escapeHTML(formatSignedMoney(Math.round(route.dailyValue)))}</strong>
+            </div>
+            ${renderQuickShoppingButton(route)}
           </div>
         </div>
 
@@ -104,9 +122,12 @@ export function renderPowderModal(route) {
           <h2 id="modal-title">${escapeHTML(route.berry.shortName)}</h2>
           <p>${escapeHTML(route.berry.effect)}</p>
         </div>
-        <div class="modal-hero__value ${route.dailyValue < 0 ? "is-negative" : ""}">
-          <span>Daily value</span>
-          <strong>${escapeHTML(formatSignedMoney(Math.round(route.dailyValue)))}</strong>
+        <div class="modal-headline__actions">
+          <div class="modal-hero__value ${route.dailyValue < 0 ? "is-negative" : ""}">
+            <span>Daily value</span>
+            <strong>${escapeHTML(formatSignedMoney(Math.round(route.dailyValue)))}</strong>
+          </div>
+          ${renderQuickShoppingButton(route)}
         </div>
       </div>
 

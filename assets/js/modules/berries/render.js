@@ -15,6 +15,21 @@ function formatSignedMoney(value) {
   return `${rounded >= 0 ? "+" : "−"}${formatMoney(Math.abs(rounded))}`;
 }
 
+function renderQuickShoppingButton(route) {
+  return `
+    <button
+      class="button button--ghost quick-shopping-button"
+      type="button"
+      data-shopping-add-berry="${escapeHTML(route.berrySlug)}"
+      data-shopping-method-key="exact"
+      data-shopping-label="${escapeHTML(route.shortName)}"
+      aria-label="Add one character of ${escapeHTML(route.shortName)} seeds to Shopping List"
+    >
+      + 1 char seeds
+    </button>
+  `;
+}
+
 function renderMethodSwitch(group) {
   if (!group.hasVariants) {
     return "";
@@ -225,9 +240,12 @@ function renderBerryCard(group) {
           <p class="berry-route-card__family">${escapeHTML(route.category)}</p>
         </div>
 
-        <div class="berry-route-card__daily ${route.dailyValue < 0 ? "is-negative" : ""}">
-          <span>Daily</span>
-          <strong>${escapeHTML(formatSignedMoney(route.dailyValue))}</strong>
+        <div class="berry-route-card__actions">
+          <div class="berry-route-card__daily ${route.dailyValue < 0 ? "is-negative" : ""}">
+            <span>Daily</span>
+            <strong>${escapeHTML(formatSignedMoney(route.dailyValue))}</strong>
+          </div>
+          ${renderQuickShoppingButton(route)}
         </div>
       </div>
 

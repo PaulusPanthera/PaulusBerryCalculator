@@ -118,13 +118,21 @@ export function initPowderApp() {
   });
 
   nodes.results.addEventListener("click", (event) => {
+    if (event.target.closest("[data-shopping-add-berry]")) {
+      return;
+    }
+
     const card = event.target.closest("[data-powder-route-details]");
     if (card) openModal(card.dataset.powderRouteDetails);
   });
 
   nodes.results.addEventListener("keydown", (event) => {
     const card = event.target.closest("[data-powder-route-details]");
-    if (card && (event.key === "Enter" || event.key === " ")) {
+    if (
+      card &&
+      !event.target.closest("[data-shopping-add-berry]") &&
+      (event.key === "Enter" || event.key === " ")
+    ) {
       event.preventDefault();
       openModal(card.dataset.powderRouteDetails);
     }

@@ -8,6 +8,7 @@ import { initBerryRoutesApp } from "./modules/berries/app.js";
 import { initPowderApp } from "./modules/powder/app.js";
 import { initLeppaApp } from "./modules/leppa/app.js";
 import { initShoppingApp } from "./modules/shopping/app.js";
+import { initShoppingQuickAdd } from "./modules/shopping/quick-add.js";
 import { initHomeApp } from "./modules/home/app.js";
 
 const yearNode = document.querySelector("#current-year");
@@ -15,6 +16,8 @@ const yearNode = document.querySelector("#current-year");
 if (yearNode) {
   yearNode.textContent = new Date().getFullYear();
 }
+
+initShoppingQuickAdd();
 
 if (document.body.classList.contains("home-page")) {
   initHomeApp();

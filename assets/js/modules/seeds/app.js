@@ -126,6 +126,10 @@ export function initSeedApp() {
   });
 
   nodes.routes.addEventListener("click", (event) => {
+    if (event.target.closest("[data-shopping-add-berry]")) {
+      return;
+    }
+
     const methodButton = event.target.closest("[data-route-method][data-route-slug]");
 
     if (methodButton) {
@@ -145,7 +149,11 @@ export function initSeedApp() {
 
     const card = event.target.closest("[data-route-details]");
 
-    if (!card || event.target.closest("[data-route-method][data-route-slug]")) {
+    if (
+      !card ||
+      event.target.closest("[data-route-method][data-route-slug]") ||
+      event.target.closest("[data-shopping-add-berry]")
+    ) {
       return;
     }
 

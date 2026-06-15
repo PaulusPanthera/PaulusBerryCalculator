@@ -150,6 +150,10 @@ export function initBerryApp() {
   }
 
   nodes.results.addEventListener("click", (event) => {
+    if (event.target.closest("[data-shopping-add-berry]")) {
+      return;
+    }
+
     const card = event.target.closest(".catalog-card[data-berry-details]");
 
     openBerryFromTrigger(card);
@@ -157,6 +161,10 @@ export function initBerryApp() {
 
   nodes.results.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") {
+      return;
+    }
+
+    if (event.target.closest("[data-shopping-add-berry]")) {
       return;
     }
 
