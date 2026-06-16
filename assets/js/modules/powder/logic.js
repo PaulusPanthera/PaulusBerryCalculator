@@ -2,17 +2,27 @@
 // v2.0.0-beta
 // Calculations for berry powder crafting routes with shared Shop prices.
 import { BERRIES } from "../catalog/data.js";
-import { FLAVOR_META } from "../pricing/defaults.js";
 import {
   getPowderBerryBuyPrice,
   getPowderIngredientPrice,
   getPowderTargetPrice,
   getPriceState,
-  getSeedPrice,
 } from "../pricing/store.js";
-import { getPowderTarget } from "./data.js";
+import { getCheapestRecipeMethod, getRecipeSeedCost } from "../recipes/variants.js";
+import { getScheduleDaysForGrowth } from "../settings/rhythm.js";
+import { getPowderTarget, POWDER_TARGETS } from "./data.js";
 
 const PLOTS_PER_CHARACTER = 156;
+
+function clampNumber(value, fallback, min, max) {
+  const parsed = Number(value);
+
+  if (Number.isNaN(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(parsed, min), max);
+}
 
 function getStandardDays(growthHours) {
   if (growthHours >= 67) return 3;
@@ -20,73 +30,15 @@ function getStandardDays(growthHours) {
   return 1;
 }
 
-function parseSeed(seedText) {
-  const [type, flavor] = seedText.toLowerCase().split(" ");
-  return { type: type === "very" ? "very" : "plain", flavor };
-}
-
-function getRecipeMethods(berry) {
-  const baseRecipe = berry.seedRecipe;
-  const methods = [{ key: "exact", kind: "exact", label: "Exact", recipe: baseRecipe }];
-
-  if (baseRecipe.length !== 2) {
-    return methods;
-  }
-
-  const variants = new Map();
-  const recipeTokens = baseRecipe.map(parseSeed);
-
-  recipeTokens.forEach((token, index) => {
-    if (token.type !== "very") {
-      return;
-    }
-
-    const replacement = [
-      ...baseRecipe.slice(0, index),
-      `Plain ${FLAVOR_META[token.flavor].label}`,
-      `Plain ${FLAVOR_META[token.flavor].label}`,
-      ...baseRecipe.slice(index + 1),
-    ];
-
-    if (replacement.length > 3) {
-      return;
-    }
-
-    const signature = [...replacement].sort().join("|");
-
-    if (!variants.has(signature)) {
-      variants.set(signature, {
-        key: `swap-${token.flavor}-${index}`,
-        kind: "plain-swap",
-        label: "Very + 2 plain",
-        recipe: replacement,
-      });
-    }
-  });
-
-  return [...methods, ...variants.values()];
-}
-
-function getRecipeUnitCost(priceState, recipe) {
-  return recipe.reduce((sum, seedText) => {
-    const parsed = parseSeed(seedText);
-    return sum + getSeedPrice(priceState, parsed.flavor, parsed.type, "buy");
-  }, 0);
-}
-
 function getPlantCost(priceState, berry, totalPlots) {
-  const method = [...getRecipeMethods(berry)].sort(
-    (left, right) =>
-      getRecipeUnitCost(priceState, left.recipe) - getRecipeUnitCost(priceState, right.recipe),
-  )[0];
-  const unitCost = getRecipeUnitCost(priceState, method.recipe);
+  const method = getCheapestRecipeMethod(berry, priceState);
+  const unitCost = getRecipeSeedCost(method.recipe, priceState);
 
   return {
     method,
     plantCost: unitCost * totalPlots,
   };
 }
-
 function getBerryBySlug(slug) {
   return BERRIES.find((entry) => entry.slug === slug) ?? null;
 }
@@ -107,9 +59,10 @@ function getIngredientBreakdown(priceState, ingredient, itemYield) {
   return { ...ingredient, quantity, unitPrice, cost: quantity * unitPrice };
 }
 
-function buildPowderRoute(priceState, berry, target, characters) {
+function buildPowderRoute(priceState, berry, target, characters, rhythmMode) {
   const totalPlots = PLOTS_PER_CHARACTER * characters;
   const standardDays = getStandardDays(berry.growthHours);
+  const scheduleDays = getScheduleDaysForGrowth(berry.growthHours, rhythmMode);
   const totalBerries = berry.yieldPerPlot * totalPlots;
   const itemYield = totalBerries / target.powderPerItem;
   const itemSell = getPowderTargetPrice(priceState, target.priceKey);
@@ -120,7 +73,7 @@ function buildPowderRoute(priceState, berry, target, characters) {
   const totalCost = plantCost + (ingredient1?.cost ?? 0) + (ingredient2?.cost ?? 0);
   const revenue = itemYield * itemSell;
   const cycleValue = revenue - totalCost;
-  const dailyValue = cycleValue / standardDays;
+  const dailyValue = cycleValue / scheduleDays;
 
   return {
     routeKey: `${berry.slug}--${target.id}`,
@@ -128,6 +81,8 @@ function buildPowderRoute(priceState, berry, target, characters) {
     target,
     characters,
     standardDays,
+    scheduleDays,
+    rhythmMode,
     totalPlots,
     totalBerries,
     itemYield,
@@ -171,31 +126,53 @@ function sortRoutes(routes, sort) {
   return copy;
 }
 
-export function getPowderScenario(state) {
+function getSafePowderState(state = {}) {
+  const targetIds = POWDER_TARGETS.map((target) => target.id);
+  const targetId = targetIds.includes(state.targetId) ? state.targetId : POWDER_TARGETS[0]?.id;
+  const characters = clampNumber(state.characters, 1, 1, 99);
+  const standardDays = ["all", "1", "2", "3"].includes(String(state.standardDays))
+    ? String(state.standardDays)
+    : "all";
+  const sortOptions = ["daily-desc", "name-asc", "cost-asc", "yield-desc"];
+
+  return {
+    targetId,
+    characters,
+    search: String(state.search || ""),
+    visibility: state.visibility === "profitable" ? "profitable" : "all",
+    standardDays,
+    sort: sortOptions.includes(state.sort) ? state.sort : "daily-desc",
+  };
+}
+
+export function getPowderScenario(state = {}) {
+  const safeState = getSafePowderState(state);
   const priceState = getPriceState();
-  const target = getPowderTarget(state.targetId);
+  const rhythmMode = priceState.assumptions?.rhythmMode === "flow" ? "flow" : "normal";
+  const target = getPowderTarget(safeState.targetId);
   const allRoutes = BERRIES.map((berry) =>
-    buildPowderRoute(priceState, berry, target, state.characters),
+    buildPowderRoute(priceState, berry, target, safeState.characters, rhythmMode),
   );
 
-  let visibleRoutes = allRoutes.filter((route) => matchesQuery(route, state.search));
+  let visibleRoutes = allRoutes.filter((route) => matchesQuery(route, safeState.search));
 
-  if (state.visibility === "profitable") {
+  if (safeState.visibility === "profitable") {
     visibleRoutes = visibleRoutes.filter((route) => route.profitable);
   }
 
-  if (state.standardDays !== "all") {
+  if (safeState.standardDays !== "all") {
     visibleRoutes = visibleRoutes.filter(
-      (route) => String(route.standardDays) === state.standardDays,
+      (route) => String(route.standardDays) === safeState.standardDays,
     );
   }
 
-  visibleRoutes = sortRoutes(visibleRoutes, state.sort);
+  visibleRoutes = sortRoutes(visibleRoutes, safeState.sort);
 
   return {
     priceState,
     target,
-    characters: state.characters,
+    characters: safeState.characters,
+    rhythmMode,
     visibleRoutes,
     totalCount: allRoutes.length,
     profitableCount: allRoutes.filter((route) => route.profitable).length,

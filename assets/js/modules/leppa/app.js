@@ -101,6 +101,7 @@ export function initLeppaApp() {
     }
 
     nodes.modalContent.innerHTML = renderLeppaModal(route);
+    nodes.modalContent.scrollTop = 0;
     nodes.modal.classList.add("is-open");
     nodes.modal.setAttribute("aria-hidden", "false");
   }

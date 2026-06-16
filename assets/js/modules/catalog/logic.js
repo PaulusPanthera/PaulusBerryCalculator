@@ -4,7 +4,7 @@
 import { FLAVOR_META } from "../pricing/defaults.js";
 import { getHarvestOutputProfile } from "../seed-harvest/logic.js";
 import {
-  getBerryPrice,
+  getBerryToolingBuyQuote,
   getHarvestToolPrice,
   getPriceState,
   getSeedPrice,
@@ -152,9 +152,10 @@ export function getSeedHarvestSummary(berry, priceState = getPriceState()) {
     0,
   );
   const breakEvenBerryBuy = Math.max(0, expectedSeedBuyValue - harvestToolCost);
-  const currentBerryBuy = getBerryPrice(priceState, berry, "buy");
-  const currentTotalCost = currentBerryBuy + harvestToolCost;
-  const currentEdge = expectedSeedBuyValue - currentTotalCost;
+  const berryBuyQuote = getBerryToolingBuyQuote(priceState, berry);
+  const currentBerryBuy = berryBuyQuote.hasPrice ? berryBuyQuote.price : null;
+  const currentTotalCost = berryBuyQuote.hasPrice ? currentBerryBuy + harvestToolCost : null;
+  const currentEdge = berryBuyQuote.hasPrice ? expectedSeedBuyValue - currentTotalCost : null;
 
   return {
     flavors,
@@ -164,9 +165,11 @@ export function getSeedHarvestSummary(berry, priceState = getPriceState()) {
     expectedSeedBuyValue,
     breakEvenBerryBuy,
     currentBerryBuy,
+    currentBerryBuySource: berryBuyQuote.source,
+    hasCurrentBerryBuy: berryBuyQuote.hasPrice,
     currentTotalCost,
     currentEdge,
-    isWorthBuying: currentEdge > 0.001,
+    isWorthBuying: berryBuyQuote.hasPrice && currentEdge > 0.001,
     isBlended: flavors.length > 1,
   };
 }

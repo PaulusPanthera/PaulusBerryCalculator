@@ -3,8 +3,10 @@
 // Standard-cycle seed route calculations grouped by flavor and normalized to daily value.
 import { BERRIES } from "../catalog/data.js";
 import { FLAVOR_META, FLAVOR_ORDER } from "../pricing/defaults.js";
+import { getRecipeMethods } from "../recipes/variants.js";
 import { getHarvestToolPrice, getPriceState, getSeedPrice } from "../pricing/store.js";
 import { getHarvestOutputsByFlavor } from "../seed-harvest/logic.js";
+import { getScheduleDaysForGrowth } from "../settings/rhythm.js";
 import {
   DEFAULT_VERY_RATE_PERCENT,
   getGrowthBucketLabel,
@@ -109,53 +111,6 @@ function getMethodLabel(method, recipeCounts, flavor, selectedShare) {
   return "Plain swap";
 }
 
-function getMethodOptions(berry) {
-  const baseRecipe = berry.seedRecipe;
-  const methods = [
-    {
-      key: "exact",
-      kind: "exact",
-      recipe: baseRecipe,
-    },
-  ];
-
-  if (baseRecipe.length !== 2) {
-    return methods;
-  }
-
-  const variants = new Map();
-  const recipeTokens = baseRecipe.map(parseSeedToken);
-
-  recipeTokens.forEach((token, index) => {
-    if (token.type !== "very") {
-      return;
-    }
-
-    const replacement = [
-      ...baseRecipe.slice(0, index),
-      `Plain ${FLAVOR_META[token.flavor].label}`,
-      `Plain ${FLAVOR_META[token.flavor].label}`,
-      ...baseRecipe.slice(index + 1),
-    ];
-
-    if (replacement.length > 3) {
-      return;
-    }
-
-    const signature = [...replacement].sort().join("|");
-
-    if (!variants.has(signature)) {
-      variants.set(signature, {
-        key: `swap-${token.flavor}`,
-        kind: "plain-swap",
-        recipe: replacement,
-      });
-    }
-  });
-
-  return [...methods, ...variants.values()];
-}
-
 function createSeedRoute(berry, flavor, state, priceState, method) {
   const recipeTokens = method.recipe.map(parseSeedToken);
   const totalPlots = state.totalPlots;
@@ -178,6 +133,7 @@ function createSeedRoute(berry, flavor, state, priceState, method) {
   const outputValue = valuationMode === "self-use" ? selfUseValue : sellValue;
   const cycleValue = outputValue - buybackValue - harvestToolCost;
   const standardDays = getStandardDaysForGrowth(berry.growthHours);
+  const scheduleDays = getScheduleDaysForGrowth(berry.growthHours, state.rhythmMode);
   const selectedFlavorNet = netSeeds[flavor];
   const selfSustain = buybackValue <= 0.001;
   const selectedFlavorTotal = selectedFlavorNet.plain + selectedFlavorNet.very;
@@ -199,6 +155,8 @@ function createSeedRoute(berry, flavor, state, priceState, method) {
     sprite: `../assets/img/berries/${berry.slug}.png`,
     growthHours: berry.growthHours,
     standardDays,
+    scheduleDays,
+    rhythmMode: state.rhythmMode,
     family: getRouteFamily(berry, selectedShare),
     orientation: getOrientationLabel(selectedShare).toLowerCase(),
     orientationLabel: getOrientationLabel(selectedShare),
@@ -222,7 +180,7 @@ function createSeedRoute(berry, flavor, state, priceState, method) {
     buybackValue,
     harvestToolCost,
     cycleValue,
-    dailyValue: cycleValue / standardDays,
+    dailyValue: cycleValue / scheduleDays,
     selfSustain,
     netSeeds,
     shareBreakdown,
@@ -233,7 +191,7 @@ function getRouteGroupsForFlavor(flavor, state, priceState, selections = {}) {
   const groups = [];
 
   for (const berry of BERRIES) {
-    const routes = getMethodOptions(berry)
+    const routes = getRecipeMethods(berry)
       .map((method) => createSeedRoute(berry, flavor, state, priceState, method))
       .filter(Boolean);
 
@@ -305,7 +263,7 @@ function getRouteGroupsForAllFlavors(state, priceState, selections = {}) {
 
   for (const berry of BERRIES) {
     const flavorGroups = FLAVOR_ORDER.map((flavor) => {
-      const routes = getMethodOptions(berry)
+      const routes = getRecipeMethods(berry)
         .map((method) => createSeedRoute(berry, flavor, state, priceState, method))
         .filter(Boolean);
 
@@ -392,11 +350,15 @@ function filterGroups(groups, state) {
   });
 }
 
-export function getSeedStateFromInputs(values) {
+function normalizeSeedScenarioState(values = {}) {
   const flavor =
     values.flavor === "all" || FLAVOR_ORDER.includes(values.flavor) ? values.flavor : "all";
   const characters = clampNumber(values.characters, 1, 1, 9);
   const veryRatePercent = clampNumber(values.veryRatePercent, DEFAULT_VERY_RATE_PERCENT, 0, 100);
+  const sortOptions = ["daily-desc", "cycle-desc", "selected-desc", "growth-asc"];
+  const visibilityOptions = ["all", "profitable", "sustain"];
+  const orientationOptions = ["all", "pure", "split", "side"];
+  const dayBucket = String(values.dayBucket ?? "all");
 
   return {
     flavor,
@@ -406,20 +368,27 @@ export function getSeedStateFromInputs(values) {
     veryRatePercent,
     veryRate: veryRatePercent / 100,
     valuation: values.valuation === "self-use" ? "self-use" : "sell",
-    sort: values.sort || "daily-desc",
-    visibility: values.visibility || "all",
-    orientation: values.orientation || "all",
-    dayBucket: values.dayBucket || "all",
+    rhythmMode: values.rhythmMode === "flow" ? "flow" : "normal",
+    sort: sortOptions.includes(values.sort) ? values.sort : "daily-desc",
+    visibility: visibilityOptions.includes(values.visibility) ? values.visibility : "all",
+    orientation: orientationOptions.includes(values.orientation) ? values.orientation : "all",
+    dayBucket: ["all", "1", "2", "3"].includes(dayBucket) ? dayBucket : "all",
   };
 }
 
-export function getSeedScenario(state, selections = {}) {
+export function getSeedStateFromInputs(values = {}) {
+  return normalizeSeedScenarioState(values);
+}
+
+export function getSeedScenario(state = {}, selections = {}) {
   const priceState = getPriceState();
+  const rhythmMode = priceState.assumptions?.rhythmMode === "flow" ? "flow" : "normal";
+  const scenarioState = normalizeSeedScenarioState({ ...state, rhythmMode });
   const allGroups =
-    state.flavor === "all"
-      ? getRouteGroupsForAllFlavors(state, priceState, selections)
-      : getRouteGroupsForFlavor(state.flavor, state, priceState, selections);
-  const filteredGroups = sortGroups(filterGroups(allGroups, state), state.sort);
+    scenarioState.flavor === "all"
+      ? getRouteGroupsForAllFlavors(scenarioState, priceState, selections)
+      : getRouteGroupsForFlavor(scenarioState.flavor, scenarioState, priceState, selections);
+  const filteredGroups = sortGroups(filterGroups(allGroups, scenarioState), scenarioState.sort);
   const allRoutes = allGroups.flatMap((group) => group.allFlavorRoutes || [group.activeRoute]);
   const bestRoute = sortRoutes(allRoutes, "daily-desc")[0] ?? null;
   const profitableCount = allGroups.filter((group) =>
@@ -430,7 +399,7 @@ export function getSeedScenario(state, selections = {}) {
   ).length;
 
   return {
-    state,
+    state: scenarioState,
     priceState,
     groups: filteredGroups,
     allGroups,

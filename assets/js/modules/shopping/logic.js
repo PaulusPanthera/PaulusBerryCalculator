@@ -3,6 +3,11 @@
 // Shopping list planning logic for berry cart entries, recipe variants, seed totals, and buy-cost summaries.
 import { BERRIES } from "../catalog/data.js";
 import { FLAVOR_META, FLAVOR_ORDER } from "../pricing/defaults.js";
+import {
+  getCheapestRecipeMethod,
+  getRecipeMethods,
+  getRecipeMethodLabel,
+} from "../recipes/variants.js";
 import { getBerryPrice, getPriceState, getSeedPrice } from "../pricing/store.js";
 import {
   getStandardDaysForGrowth,
@@ -45,73 +50,6 @@ function normalizeInventory(input) {
   }
 
   return output;
-}
-
-function getMethodLabel(method) {
-  return method.kind === "plain-swap" ? "Plain swap" : "Exact";
-}
-
-function getRecipeMethods(berry) {
-  const baseRecipe = berry.seedRecipe;
-  const methods = [
-    {
-      key: "exact",
-      kind: "exact",
-      label: "Exact",
-      recipe: baseRecipe,
-    },
-  ];
-
-  if (baseRecipe.length !== 2) {
-    return methods;
-  }
-
-  const variants = new Map();
-  const recipeTokens = baseRecipe.map(parseSeedToken);
-
-  recipeTokens.forEach((token, index) => {
-    if (token.type !== "very") {
-      return;
-    }
-
-    const replacement = [
-      ...baseRecipe.slice(0, index),
-      `Plain ${FLAVOR_META[token.flavor].label}`,
-      `Plain ${FLAVOR_META[token.flavor].label}`,
-      ...baseRecipe.slice(index + 1),
-    ];
-
-    if (replacement.length > 3) {
-      return;
-    }
-
-    const signature = [...replacement].sort().join("|");
-
-    if (!variants.has(signature)) {
-      variants.set(signature, {
-        key: `swap-${token.flavor}-${index}`,
-        kind: "plain-swap",
-        label: "Very + 2 plain",
-        recipe: replacement,
-      });
-    }
-  });
-
-  return [...methods, ...variants.values()];
-}
-
-function getRecipeSeedCost(recipe, priceState) {
-  return recipe.reduce((sum, token) => {
-    const parsed = parseSeedToken(token);
-    return sum + getSeedPrice(priceState, parsed.flavor, parsed.type, "buy");
-  }, 0);
-}
-
-function getCheapestRecipeMethod(berry, priceState) {
-  return [...getRecipeMethods(berry)].sort(
-    (left, right) =>
-      getRecipeSeedCost(left.recipe, priceState) - getRecipeSeedCost(right.recipe, priceState),
-  )[0];
 }
 
 function normalizeEntry(entry) {
@@ -284,7 +222,7 @@ function evaluateEntry(entry, priceState) {
     ...entry,
     berry,
     method,
-    methodLabel: getMethodLabel(method),
+    methodLabel: getRecipeMethodLabel(method),
     totalRuns,
     totalPlots,
     totalBerries,

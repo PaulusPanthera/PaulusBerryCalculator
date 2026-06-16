@@ -9,17 +9,22 @@ import { getBerryRouteScenario } from "../berries/logic.js";
 import { getLeppaScenario } from "../leppa/logic.js";
 import { FLAVOR_META, FLAVOR_ORDER } from "../pricing/defaults.js";
 import { getPriceState } from "../pricing/store.js";
+import { getRhythmLabel } from "../settings/rhythm.js";
 import { POWDER_TARGETS } from "../powder/data.js";
 import { getPowderScenario } from "../powder/logic.js";
 import { getSeedScenario, getSeedStateFromInputs } from "../seeds/logic.js";
 
 const DEFAULT_VERY_RATE = 30;
 const DEFAULT_CHARACTERS = 1;
-const DEFAULT_LEPPA_CHARACTERS = 9;
+const DEFAULT_LEPPA_CHARACTERS = 1;
 const DEFAULT_POWDER_TARGET_ID = "pp-max";
 
 function getBerrySprite(slug) {
-  return `assets/img/berries/${slug}.png`;
+  const safeSlug = String(slug || "")
+    .split(":")
+    .pop();
+
+  return `assets/img/berries/${safeSlug}.png`;
 }
 
 function getSeedRoutes() {
@@ -50,6 +55,7 @@ function getBerryRoutes() {
     visibility: "all",
     method: "all",
     standardDays: "all",
+    scope: "no-blender",
     sort: "daily-desc",
     search: "",
     activeMethods: {},
@@ -63,7 +69,9 @@ function getBreakpointRoutes(priceState) {
   return BERRIES.map((berry) => ({
     berry,
     summary: getSeedHarvestSummary(berry, priceState),
-  })).sort((left, right) => right.summary.currentEdge - left.summary.currentEdge);
+  }))
+    .filter((entry) => entry.summary.hasCurrentBerryBuy)
+    .sort((left, right) => right.summary.currentEdge - left.summary.currentEdge);
 }
 
 function getSourceSummary(priceState) {
@@ -77,13 +85,23 @@ function getSourceSummary(priceState) {
     `Powder sell · ${priceState?.powder?.targetMode || "manual"}`,
     `Powder extras · ${priceState?.powder?.ingredientMode || "manual"}`,
     `Powder berry buys · ${priceState?.powder?.berryMode || "vendor"}`,
+    `Rhythm · ${getRhythmLabel(priceState?.assumptions?.rhythmMode)}`,
+    `Leppa packet · ${priceState?.packets?.leppa?.enabled ? "on" : "off"}`,
     syncLabel,
   ];
 }
 
+function getRouteRhythmLabel(route) {
+  if (route?.rhythmMode === "flow" && Number(route?.scheduleDays) > 0) {
+    return `Flow ${route.scheduleDays.toFixed(2)}d`;
+  }
+
+  return `${route?.standardDays || 1} day standard`;
+}
+
 function renderSummaryPills(target, priceState, seedRoutes, berryRoutes, leppaRoute, powderRoute) {
   const breakpointCount = getBreakpointRoutes(priceState).filter(
-    (entry) => entry.summary.currentEdge > 0.001,
+    (entry) => entry.summary.isWorthBuying,
   ).length;
   const topSeed = seedRoutes[0];
   const topBerry = berryRoutes[0];
@@ -150,7 +168,7 @@ function renderSeedRoutes(target, routes) {
         <a class="home-route-row" href="pages/seeds.html">
           <div class="home-route-row__media">
             <span class="home-rank">#${index + 1}</span>
-            <img src="${escapeHTML(getBerrySprite(route.slug))}" alt="${escapeHTML(route.shortName)} berry sprite">
+            <img src="${escapeHTML(getBerrySprite(route.berrySlug || route.slug))}" alt="${escapeHTML(route.shortName)} berry sprite">
             <div class="home-route-row__copy">
               <strong>${escapeHTML(route.shortName)}</strong>
               <span>${escapeHTML(route.flavorLabel)} · ${escapeHTML(route.methodLabel)} · ${escapeHTML(route.shareLabel)}</span>
@@ -177,7 +195,7 @@ function renderBerryRoutes(target, routes) {
             <img src="${escapeHTML(getBerrySprite(route.berrySlug))}" alt="${escapeHTML(route.shortName)} berry sprite">
             <div class="home-route-row__copy">
               <strong>${escapeHTML(route.shortName)}</strong>
-              <span>${escapeHTML(route.methodLabel)} · ${escapeHTML(formatHours(route.growthHours))} · ${escapeHTML(route.standardDays)} day standard</span>
+              <span>${escapeHTML(route.methodLabel)} · ${escapeHTML(formatHours(route.growthHours))} · ${escapeHTML(getRouteRhythmLabel(route))}</span>
             </div>
           </div>
           <div class="home-route-row__value ${route.dailyValue < 0 ? "is-negative" : ""}">
@@ -191,6 +209,16 @@ function renderBerryRoutes(target, routes) {
 }
 
 function renderBreakpointRoutes(target, entries) {
+  if (entries.length === 0) {
+    target.innerHTML = `
+      <div class="empty-state">
+        <p><strong>No berry buy source active.</strong></p>
+        <p class="muted">Set berry prices to manual or auto before judging buy + Harvest Tool breakpoints.</p>
+      </div>
+    `;
+    return;
+  }
+
   target.innerHTML = entries
     .slice(0, 5)
     .map(
@@ -254,7 +282,7 @@ function renderPowderRoutes(target, targetLabel, routes) {
             <img src="${escapeHTML(getBerrySprite(route.berry.slug))}" alt="${escapeHTML(route.berry.shortName)} berry sprite">
             <div class="home-route-row__copy">
               <strong>${escapeHTML(route.berry.shortName)}</strong>
-              <span>${escapeHTML(targetLabel)} · ${escapeHTML(formatHours(route.berry.growthHours))} · ${escapeHTML(route.standardDays)} day standard</span>
+              <span>${escapeHTML(targetLabel)} · ${escapeHTML(formatHours(route.berry.growthHours))} · ${escapeHTML(getRouteRhythmLabel(route))}</span>
             </div>
           </div>
           <div class="home-route-row__value ${route.dailyValue < 0 ? "is-negative" : ""}">

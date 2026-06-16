@@ -14,6 +14,8 @@ import {
 import {
   renderAutoSyncSummary,
   renderBerryPriceRows,
+  renderEvBerryPacketSettings,
+  renderLeppaPacketSettings,
   renderPowderBerryRows,
   renderPowderIngredientCards,
   renderPowderSectionNotes,
@@ -27,11 +29,14 @@ export function initShopApp() {
     heroSummary: select("#shop-hero-summary"),
     autoSummary: select("#shop-auto-summary"),
     seedCards: select("#seed-price-cards"),
+    leppaPacketSettings: select("#leppa-packet-settings"),
+    evBerryPacketSettings: select("#ev-berry-packet-settings"),
     berrySearch: select("#berry-price-search"),
     berryRows: select("#berry-price-rows"),
     resetButton: select("#shop-reset"),
     seedMode: select("#shop-seeds-mode"),
     berryMode: select("#shop-berries-mode"),
+    rhythmMode: select("#shop-rhythm-mode"),
     autoSource: select("#shop-auto-source"),
     autoEndpoint: select("#shop-auto-endpoint"),
     autoSync: select("#shop-auto-sync"),
@@ -59,6 +64,7 @@ export function initShopApp() {
   function syncStaticFields() {
     nodes.seedMode.value = priceState.seeds.mode;
     nodes.berryMode.value = priceState.berries.mode;
+    nodes.rhythmMode.value = priceState.assumptions?.rhythmMode || "normal";
     nodes.autoSource.value = priceState.autoPricing.source;
     nodes.autoEndpoint.value = priceState.autoPricing.customEndpoint;
     nodes.autoEndpoint.disabled = priceState.autoPricing.source !== "custom";
@@ -79,6 +85,8 @@ export function initShopApp() {
     renderShopHeroSummary(nodes.heroSummary, priceState);
     renderAutoSyncSummary(nodes.autoSummary, priceState);
     renderSeedPriceCards(nodes.seedCards, priceState);
+    renderLeppaPacketSettings(nodes.leppaPacketSettings, priceState);
+    renderEvBerryPacketSettings(nodes.evBerryPacketSettings, priceState);
     renderBerryPriceRows(nodes.berryRows, BERRIES, priceState, nodes.berrySearch.value.trim());
     renderPowderSectionNotes(
       nodes.powderSummary,
@@ -159,6 +167,44 @@ export function initShopApp() {
     persist();
   });
 
+  nodes.leppaPacketSettings.addEventListener("input", (event) => {
+    const priceInput = event.target.closest("[data-leppa-packet-price]");
+    if (!priceInput) return;
+    priceState.packets ||= {};
+    priceState.packets.leppa ||= {};
+    priceState.packets.leppa.price = Number(priceInput.value) || 0;
+    persist("Leppa packet saved");
+  });
+
+  nodes.leppaPacketSettings.addEventListener("change", (event) => {
+    const enabledInput = event.target.closest("[data-leppa-packet-enabled]");
+    if (!enabledInput) return;
+    priceState.packets ||= {};
+    priceState.packets.leppa ||= {};
+    priceState.packets.leppa.enabled = enabledInput.checked;
+    persist("Leppa packet saved");
+    render();
+  });
+
+  nodes.evBerryPacketSettings.addEventListener("input", (event) => {
+    const priceInput = event.target.closest("[data-ev-berry-packet-price]");
+    if (!priceInput) return;
+    priceState.packets ||= {};
+    priceState.packets.evBerry ||= {};
+    priceState.packets.evBerry.price = Number(priceInput.value) || 0;
+    persist("EV berry packet saved");
+  });
+
+  nodes.evBerryPacketSettings.addEventListener("change", (event) => {
+    const enabledInput = event.target.closest("[data-ev-berry-packet-enabled]");
+    if (!enabledInput) return;
+    priceState.packets ||= {};
+    priceState.packets.evBerry ||= {};
+    priceState.packets.evBerry.enabled = enabledInput.checked;
+    persist("EV berry packet saved");
+    render();
+  });
+
   nodes.berrySearch.addEventListener("input", render);
 
   nodes.berryRows.addEventListener("input", (event) => {
@@ -180,6 +226,13 @@ export function initShopApp() {
   nodes.berryMode.addEventListener("change", () => {
     priceState.berries.mode = nodes.berryMode.value;
     persist();
+    render();
+  });
+
+  nodes.rhythmMode.addEventListener("change", () => {
+    priceState.assumptions ||= {};
+    priceState.assumptions.rhythmMode = nodes.rhythmMode.value === "flow" ? "flow" : "normal";
+    persist("Rhythm saved");
     render();
   });
 

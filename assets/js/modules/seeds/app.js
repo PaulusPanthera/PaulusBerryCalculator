@@ -133,7 +133,8 @@ export function initSeedApp() {
     const methodButton = event.target.closest("[data-route-method][data-route-slug]");
 
     if (methodButton) {
-      methodSelections[methodButton.dataset.routeSlug] = methodButton.dataset.routeMethod;
+      methodSelections[`${activeFlavor}:${methodButton.dataset.routeSlug}`] =
+        methodButton.dataset.routeMethod;
       rerender();
       return;
     }

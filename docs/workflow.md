@@ -1,58 +1,42 @@
-# Workflow notes
+# Workflow
 
-## Core principle
+## Local check
 
-Keep the project boring in the best way:
+```powershell
+npm install
+npm run check
+```
 
-- easy to reopen after weeks away
-- easy to test locally
-- easy to push
-- easy to publish as static files
-- easy to understand file-by-file
+## Local smoke test
 
-## Suggested branch style
+```powershell
+python -m http.server 8000
+```
 
-For a simple solo project, keep it light:
+Open `http://localhost:8000` and manually check:
 
-- `main` for stable work
-- optional short-lived feature branches only for risky changes
+- Home loads.
+- BerryDex opens berry details.
+- Seeds switches flavor tabs and valuation modes.
+- Berry Routes, Leppa, Berry Powder, Shopping List, Prices, and Guide load.
+- `+ 1 char seeds` adds the correct berry to Shopping List.
+- Price edits persist after refresh.
 
-Examples:
+## Commit and push
 
-- `feature/profit-table`
-- `feature/seed-inputs`
-- `fix/mobile-spacing`
+```powershell
+git status
+git add .
+git commit -m "Describe the change"
+git push
+```
 
-## Commit style
+GitHub Pages redeploys from `main`.
 
-Use small, specific commits.
+## Patch discipline
 
-Examples:
-
-- `feat: add berry search input`
-- `feat: add profit calculation helper`
-- `fix: prevent empty data crash`
-- `style: tighten card spacing`
-- `docs: add data contract notes`
-- `chore: prepare v0.2.0`
-
-## Data contract idea
-
-Keep raw data simple at first.
-
-Suggested future fields:
-
-- `name`
-- `seedCost`
-- `yieldMin`
-- `yieldMax`
-- `growthHours`
-- `marketPrice`
-- `npcSellPrice`
-- `notes`
-
-## Rule of thumb
-
-When a file starts doing too many jobs, split it.
-When a folder has only one unclear dump-file, organize it.
-When a workflow step is repeated often, script it.
+- Fix real bugs first.
+- Prefer surgical edits.
+- Do not refactor architecture just for style.
+- Keep recipe variants and harvested-seed math centralized.
+- Run `npm run check` before pushing.

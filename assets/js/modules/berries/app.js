@@ -23,6 +23,7 @@ export function initBerryRoutesApp() {
     visibility: select("#berry-routes-show"),
     method: select("#berry-routes-method"),
     days: select("#berry-routes-days"),
+    scope: select("#berry-routes-scope"),
     sort: select("#berry-routes-sort"),
     modal: select("#berry-route-modal"),
     modalContent: select("#berry-route-modal-content"),
@@ -38,6 +39,7 @@ export function initBerryRoutesApp() {
     visibility: "all",
     method: "all",
     standardDays: "all",
+    scope: "all",
     sort: "daily-desc",
     search: "",
     activeMethods: {},
@@ -52,6 +54,7 @@ export function initBerryRoutesApp() {
     nodes.visibility.value = state.visibility;
     nodes.method.value = state.method;
     nodes.days.value = state.standardDays;
+    nodes.scope.value = state.scope;
     nodes.sort.value = state.sort;
     nodes.search.value = state.search;
   }
@@ -97,6 +100,7 @@ export function initBerryRoutesApp() {
       visibility: nodes.visibility.value,
       method: nodes.method.value,
       standardDays: nodes.days.value,
+      scope: nodes.scope.value,
       sort: nodes.sort.value,
     };
 

@@ -1,104 +1,62 @@
 # PaulusBerryCalculator
 
-Static starter for your berry calculator website.
+A static, framework-free PokeMMO berry farming calculator focused on practical money-per-day decisions, shared price settings, and clear route comparison.
 
-## Status
+## What it does
 
-This project is proprietary.
-All rights reserved.
-No permission is granted to use, copy, modify, distribute, host, or create derivative works from this repository without prior written permission.
+- **Home**: dashboard for top seed routes, berry routes, Leppa routes, powder routes, and breakpoint highlights.
+- **BerryDex**: berry catalog with recipes, yields, vendor values, and harvest-tool seed output/breakpoint details.
+- **Seeds**: seed-production route comparison with sell-value and self-use valuation modes.
+- **Berry Routes**: berry-selling route comparison with buy-seed and simple self-sufficient route families.
+- **Leppa**: clean normalized Leppa baselines for seed-buy and self-sufficient support approaches.
+- **Berry Powder**: powder crafting route comparison using shared Shop prices.
+- **Shopping List**: seed basket planner with inventory deduction and quick-add buttons from other pages.
+- **Prices**: shared pricing control center stored in local storage, including optional Leppa and EV/NPC berry seed packet overrides.
+- **Guide**: project notes, berry basics, and practical farming explanations.
 
-## What this template is for
+## Project rules
 
-A very small static site that still follows good habits:
+- Static website only: plain HTML, CSS, and modular JavaScript.
+- No backend and no framework.
+- Shared prices live in local storage under:
 
-- clean folder structure
-- modular JavaScript
-- separate data, style, and UI concerns
-- local development in the same folder you will later push
-- lightweight checks with Prettier and ESLint
-- simple PowerShell scripts for setup, local preview, pushes, and releases
-
-## Folder structure
-
-```text
-PaulusBerryCalculator/
-├─ .github/
-│  └─ workflows/
-├─ .vscode/
-├─ assets/
-│  ├─ css/
-│  ├─ data/
-│  ├─ icons/
-│  ├─ img/
-│  └─ js/
-│     └─ modules/
-├─ docs/
-├─ pages/
-├─ scripts/
-├─ 404.html
-├─ index.html
-├─ package.json
-└─ README.md
+```txt
+paulus-berry-calculator-price-state-v1
 ```
+
+- Harvest Tool is fixed at **350** and is not configurable.
+- Optional seed packet overrides can replace individual seed prices for direct Leppa and EV/NPC berry buy-seed routes.
+- Harvested-seed output follows the current observed model:
+  - 1 berry becomes 1 seed.
+  - color chance is weighted by recipe flavor points.
+  - 1 flavor point outputs plain only.
+  - 2+ flavor points output 70% plain / 30% very.
+- Current version label stays fixed at `v2.0.0-beta`.
 
 ## Local workflow
 
-After unzipping, this folder is your actual local project folder.
-You edit files here, run Git here, and push from here.
-
-### First-time setup
-
 ```powershell
-cd .\PaulusBerryCalculator_proprietary_template
 npm install
-.\scripts\init-repo.ps1
-git add .
-git commit -m "chore: initial project setup"
-git push -u origin main
-```
-
-### Daily workflow
-
-```powershell
-.\scripts\serve.ps1
 npm run check
-git status
-git add .
-git commit -m "feat: your change"
-git push origin main
+python -m http.server 8000
 ```
 
-Or use the helper:
+Open:
+
+```txt
+http://localhost:8000
+```
+
+## Deploy
+
+This project is GitHub Pages friendly. Push to `main`; Pages can publish from the repository root.
 
 ```powershell
-.\scripts\push-main.ps1 -Message "feat: your change"
+git add .
+git commit -m "Describe the change"
+git push
 ```
 
-## Recommended coding rhythm
+## Notes
 
-1. Start with raw data shape first.
-2. Add the smallest useful UI.
-3. Add only the JS needed for that feature.
-4. Keep functions short and focused.
-5. Run checks before every push.
-6. Prefer small commits over giant rewrites.
-7. Tag stable milestones.
-
-## Publishing idea
-
-Keep the repository as your source of truth.
-Use `main` for stable work.
-Use tags for versions.
-Use GitHub Releases when you want downloadable snapshots.
-
-## Notes for a berry calculator
-
-Try to separate these concerns early:
-
-- raw berry values in `assets/data/`
-- formulas and calculations in `assets/js/modules/`
-- page wiring in `assets/js/main.js`
-- presentation in `assets/css/main.css`
-
-That makes later growth much easier without needing a framework too early.
+This is an unofficial fan tool. Pokémon is © Nintendo / Creatures Inc. / GAME FREAK inc.

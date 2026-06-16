@@ -42,6 +42,11 @@ export const FLAVOR_META = {
   },
 };
 
+export const LEPPA_SEED_PACKET_SIZE = 156;
+export const EV_BERRY_SEED_PACKET_SIZE = 156;
+export const DEFAULT_LEPPA_SEED_PACKET_PRICE = 490000;
+export const DEFAULT_EV_BERRY_SEED_PACKET_PRICE = 490000;
+
 export const AUTO_SOURCE_PRESETS = {
   fiereu: {
     label: "Fiereu mirror",
@@ -114,11 +119,11 @@ export const DEFAULT_PRICE_STATE = {
   seeds: {
     mode: "manual",
     manual: {
-      spicy: seedPairDefaults(790, 1800),
-      bitter: seedPairDefaults(900, 1730),
-      sweet: seedPairDefaults(870, 1720),
-      dry: seedPairDefaults(720, 1780),
-      sour: seedPairDefaults(810, 1770),
+      spicy: seedPairDefaults(700, 1720),
+      bitter: seedPairDefaults(700, 1720),
+      sweet: seedPairDefaults(700, 1720),
+      dry: seedPairDefaults(700, 1720),
+      sour: seedPairDefaults(700, 1720),
     },
     auto: autoSeedDefaults(),
   },
@@ -132,6 +137,21 @@ export const DEFAULT_PRICE_STATE = {
     harvestTool: {
       vendor: 350,
       manual: 350,
+    },
+  },
+  assumptions: {
+    rhythmMode: "normal",
+  },
+  packets: {
+    leppa: {
+      enabled: false,
+      price: DEFAULT_LEPPA_SEED_PACKET_PRICE,
+      seedsPerPacket: LEPPA_SEED_PACKET_SIZE,
+    },
+    evBerry: {
+      enabled: false,
+      price: DEFAULT_EV_BERRY_SEED_PACKET_PRICE,
+      seedsPerPacket: EV_BERRY_SEED_PACKET_SIZE,
     },
   },
   powder: {

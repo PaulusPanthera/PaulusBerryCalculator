@@ -82,6 +82,14 @@ function renderShareChips(route) {
     .join("");
 }
 
+function getRhythmBadge(route) {
+  if (route.rhythmMode === "flow") {
+    return `Flow ${route.scheduleDays.toFixed(2)}d`;
+  }
+
+  return `${route.standardDays} day standard`;
+}
+
 function renderPreviewStat(label, value, tone = "default") {
   return `
     <div class="seed-preview-stat ${tone !== "default" ? `is-${tone}` : ""}">
@@ -218,7 +226,7 @@ function createRouteModalContent(group, flavor) {
           <h4>Quick facts</h4>
           <div class="detail-list detail-list--cards">
             ${renderModalMetric("Grow time", formatHours(route.growthHours))}
-            ${renderModalMetric("Standard days", `${route.standardDays} day`)}
+            ${renderModalMetric(route.rhythmMode === "flow" ? "Flow cycle" : "Standard days", route.rhythmMode === "flow" ? `${route.scheduleDays.toFixed(2)} day` : `${route.standardDays} day`)}
             ${renderModalMetric("Average yield", formatYield(route.averageYield))}
             ${renderModalMetric("Yield spread", formatYieldProfile(route.yieldProfile))}
             ${renderModalMetric("Berries tooled", formatNumber(Math.round(route.totalBerries)))}
@@ -338,7 +346,7 @@ function renderRouteCard(group, flavor) {
       <div class="seed-badges">
         ${group.hasVariants ? `<span class="seed-badge seed-badge--method">${escapeHTML(route.methodLabel)}</span>` : ""}
         <span class="seed-badge">${escapeHTML(formatHours(route.growthHours))} grow</span>
-        <span class="seed-badge">${escapeHTML(route.standardDays)} day standard</span>
+        <span class="seed-badge">${escapeHTML(getRhythmBadge(route))}</span>
         <span class="seed-badge ${route.selfSustain ? "is-good" : "is-warn"}">${route.selfSustain ? "Self-sustain" : "Needs buyback"}</span>
         ${flavor !== "all" ? renderShareChips(route) : ""}
       </div>

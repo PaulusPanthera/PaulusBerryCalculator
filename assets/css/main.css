@@ -343,6 +343,32 @@ a {
   appearance: none;
 }
 
+.field--checkbox {
+  align-content: end;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgb(15 13 10 / 0.5);
+}
+
+.field--checkbox span {
+  color: var(--text);
+}
+
+.field--checkbox input[type="checkbox"] {
+  width: 22px;
+  min-height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  accent-color: var(--accent);
+}
+
 .toolbar-actions {
   display: flex;
 }
@@ -576,10 +602,12 @@ a {
   inset: 0;
   z-index: 60;
   display: none;
+  padding: clamp(0.6rem, 3vh, 1.4rem) 0;
 }
 
 .modal.is-open {
-  display: block;
+  display: grid;
+  place-items: start center;
 }
 
 .modal__backdrop {
@@ -591,15 +619,39 @@ a {
 
 .modal__dialog {
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(calc(100% - 1.2rem), 920px);
-  margin: min(7vh, 4rem) auto;
+  max-height: calc(100dvh - clamp(1.2rem, 6vh, 2.8rem));
+  margin: 0 auto;
   padding: 1.15rem;
+  overflow: hidden;
   border: 1px solid var(--line-strong);
   border-radius: 30px;
   background:
     linear-gradient(180deg, rgb(36 29 22 / 0.97), rgb(22 19 15 / 0.97)),
     radial-gradient(circle at top right, rgb(255 205 120 / 0.08), transparent 30%);
   box-shadow: 0 24px 65px rgb(0 0 0 / 0.45);
+}
+
+.modal__dialog > [id$="modal-content"],
+.modal__dialog > #modal-content {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  scrollbar-color: rgb(172 220 126 / 0.55) transparent;
+  scrollbar-width: thin;
+}
+
+.modal__dialog > [id$="modal-content"]::-webkit-scrollbar,
+.modal__dialog > #modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal__dialog > [id$="modal-content"]::-webkit-scrollbar-thumb,
+.modal__dialog > #modal-content::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(172 220 126 / 0.45);
 }
 
 .modal__close {
@@ -789,8 +841,12 @@ a {
     margin-top: -0.15rem;
   }
 
+  .modal {
+    padding: 0.5rem 0;
+  }
+
   .modal__dialog {
-    margin: 4vh auto;
+    max-height: calc(100dvh - 1rem);
   }
 
   .modal-hero,

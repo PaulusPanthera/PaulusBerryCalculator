@@ -1,6 +1,6 @@
 <!-- pages/leppa.html -->
 <!-- v2.0.0-beta -->
-<!-- Native Leppa planner page for comparing Leppa route families with shared Shop prices and current 30 / 70 rules. -->
+<!-- Clean Leppa planner page for normalized buy and self-sufficient route baselines. -->
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,7 +9,7 @@
     <title>Leppa Planner · PaulusBerryCalculator</title>
     <meta
       name="description"
-      content="Compare native Leppa route families with shared Shop prices, fixed Harvest Tool math, and money-per-day focus."
+      content="Compare clean normalized Leppa route baselines with shared Shop prices, fixed Harvest Tool math, and money-per-day focus."
     />
     <link rel="icon" href="../assets/icons/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../assets/css/main.css" />
@@ -42,10 +42,10 @@
       <section class="hero-panel hero-panel--compact" aria-labelledby="leppa-hero-heading">
         <div class="hero-panel__content stack-md">
           <p class="eyebrow">Leppa</p>
-          <h2 id="leppa-hero-heading">Compare the core Leppa route families.</h2>
+          <h2 id="leppa-hero-heading">Compare simple Leppa baselines first.</h2>
           <p class="lead">
-            Money-per-day first. Shared Shop prices drive Leppa sells plus support-seed sells and
-            buys.
+            Money-per-day first. Start with one-character baseline routes before deeper rhythm
+            systems like Starf pipelines and 16h flow.
           </p>
           <div id="leppa-hero-summary" class="hero-pills" aria-live="polite"></div>
         </div>
@@ -55,7 +55,7 @@
         <div class="section-heading section-heading--tight">
           <div>
             <p class="eyebrow">Leppa routes</p>
-            <h2 id="leppa-controls-heading">Native daily patterns</h2>
+            <h2 id="leppa-controls-heading">Simple baseline patterns</h2>
           </div>
           <div id="leppa-price-summary" class="results-summary" aria-live="polite"></div>
         </div>
@@ -70,7 +70,7 @@
               min="1"
               max="99"
               step="1"
-              value="9"
+              value="1"
             />
           </label>
 
@@ -86,10 +86,9 @@
             <span>Family</span>
             <select id="leppa-family" name="leppa-family">
               <option value="all">All</option>
-              <option value="standard">Standard support</option>
-              <option value="alt">Alt support</option>
-              <option value="hybrid">Hybrid buy</option>
-              <option value="gtl">Buy-all benchmark</option>
+              <option value="buy">Seed buy</option>
+              <option value="self">Rawst/Pecha self-sufficient</option>
+              <option value="starf">Starf self-sufficient</option>
             </select>
           </label>
 
@@ -109,14 +108,15 @@
               id="leppa-search"
               name="leppa-search"
               type="search"
-              placeholder="standard, hybrid, spicy..."
+              placeholder="buy, self, starf..."
             />
           </label>
         </form>
 
         <p class="toolbar-note">
-          This tab now uses native daily support math at a shared
-          <strong>9-character</strong> baseline. Harvest Tool stays fixed at <strong>350 ¥</strong>.
+          This tab uses the global Farming rhythm from Prices. Normal uses standard day buckets;
+          Flow uses exact grow-time uptime for routes where timing matters. Harvest Tool stays fixed
+          at <strong>350 ¥</strong>.
         </p>
       </section>
 
@@ -124,7 +124,7 @@
         <div class="section-heading section-heading--tight">
           <div>
             <p class="eyebrow">Planner</p>
-            <h2 id="leppa-results-heading">Current Leppa route board</h2>
+            <h2 id="leppa-results-heading">Leppa baseline board</h2>
           </div>
           <div id="leppa-results-summary" class="results-summary" aria-live="polite"></div>
         </div>
@@ -150,7 +150,7 @@
 
     <footer class="site-footer">
       <div class="container footer-inner">
-        <p>Leppa first. Native support math now.</p>
+        <p>Leppa first. Clean baselines now.</p>
         <p><span id="current-year"></span> · PaulusBerryCalculator</p>
       </div>
     </footer>

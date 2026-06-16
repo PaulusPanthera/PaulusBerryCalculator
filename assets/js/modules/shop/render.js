@@ -2,7 +2,14 @@
 // v2.0.0-beta
 // Rendering helpers for Shop sections, shared pricing inputs, and auto-price sync status.
 import { escapeHTML, formatMoney } from "../format.js";
-import { AUTO_SOURCE_PRESETS, FLAVOR_META, FLAVOR_ORDER } from "../pricing/defaults.js";
+import {
+  AUTO_SOURCE_PRESETS,
+  EV_BERRY_SEED_PACKET_SIZE,
+  FLAVOR_META,
+  FLAVOR_ORDER,
+  LEPPA_SEED_PACKET_SIZE,
+} from "../pricing/defaults.js";
+import { getRhythmLabel } from "../settings/rhythm.js";
 
 function renderAutoValueLine(mode, values) {
   if (mode !== "auto" || !values || (values.buy <= 0 && values.sell <= 0)) {
@@ -89,6 +96,72 @@ export function renderSeedPriceCards(target, priceState) {
   }).join("");
 }
 
+export function renderLeppaPacketSettings(target, priceState) {
+  const packet = priceState.packets?.leppa ?? {};
+  const price = Number(packet.price) || 0;
+  const enabled = packet.enabled === true;
+  const perPlanting = price > 0 ? price / LEPPA_SEED_PACKET_SIZE : 0;
+
+  target.innerHTML = `
+    <article class="shop-card shop-card--wide">
+      <div class="shop-card__head">
+        <div>
+          <p class="eyebrow">Leppa packet</p>
+          <h3>Seed packet override</h3>
+          <p class="toolbar-note">One packet is treated as ${escapeHTML(String(LEPPA_SEED_PACKET_SIZE))}× Very Spicy, Plain Bitter, and Plain Sweet for direct Leppa planting.</p>
+        </div>
+      </div>
+
+      <div class="shop-card__grid shop-card__grid--dual-prices">
+        <label class="field" for="leppa-packet-price">
+          <span>Packet price</span>
+          <input id="leppa-packet-price" data-leppa-packet-price type="number" min="0" step="1000" value="${escapeHTML(String(price))}">
+        </label>
+
+        <label class="field field--checkbox" for="leppa-packet-enabled">
+          <span>Use packet price for Leppa seed-buy route</span>
+          <input id="leppa-packet-enabled" data-leppa-packet-enabled type="checkbox" ${enabled ? "checked" : ""}>
+        </label>
+      </div>
+
+      <p class="shop-inline-note">${enabled ? "Active" : "Inactive"} · ${escapeHTML(formatMoney(Math.round(perPlanting)))} per Leppa planting equivalent.</p>
+    </article>
+  `;
+}
+
+export function renderEvBerryPacketSettings(target, priceState) {
+  const packet = priceState.packets?.evBerry ?? {};
+  const price = Number(packet.price) || 0;
+  const enabled = packet.enabled === true;
+  const perPlanting = price > 0 ? price / EV_BERRY_SEED_PACKET_SIZE : 0;
+
+  target.innerHTML = `
+    <article class="shop-card shop-card--wide">
+      <div class="shop-card__head">
+        <div>
+          <p class="eyebrow">EV / NPC berry packet</p>
+          <h3>Seed packet override</h3>
+          <p class="toolbar-note">One packet is treated as a full ${escapeHTML(String(EV_BERRY_SEED_PACKET_SIZE))}-plot seed set for one EV berry run, such as Pomeg, Kelpsy, Qualot, Hondew, Grepa, or Tamato.</p>
+        </div>
+      </div>
+
+      <div class="shop-card__grid shop-card__grid--dual-prices">
+        <label class="field" for="ev-berry-packet-price">
+          <span>Packet price</span>
+          <input id="ev-berry-packet-price" data-ev-berry-packet-price type="number" min="0" step="1000" value="${escapeHTML(String(price))}">
+        </label>
+
+        <label class="field field--checkbox" for="ev-berry-packet-enabled">
+          <span>Use packet price for EV berry buy-seed routes</span>
+          <input id="ev-berry-packet-enabled" data-ev-berry-packet-enabled type="checkbox" ${enabled ? "checked" : ""}>
+        </label>
+      </div>
+
+      <p class="shop-inline-note">${enabled ? "Active" : "Inactive"} · ${escapeHTML(formatMoney(Math.round(perPlanting)))} per 156-plot EV berry run.</p>
+    </article>
+  `;
+}
+
 export function renderBerryPriceRows(target, berries, priceState, query = "") {
   const filtered = berries.filter((berry) => {
     if (!query) {
@@ -145,6 +218,9 @@ export function renderShopHeroSummary(target, priceState) {
     <span class="hero-pill">${escapeHTML(berryMode)}</span>
     <span class="hero-pill">${escapeHTML(powderTargetMode)}</span>
     <span class="hero-pill">${escapeHTML(powderBerryMode)}</span>
+    <span class="hero-pill">Rhythm · ${escapeHTML(getRhythmLabel(priceState.assumptions?.rhythmMode))}</span>
+    <span class="hero-pill">Leppa packet · ${escapeHTML(priceState.packets?.leppa?.enabled ? "On" : "Off")}</span>
+    <span class="hero-pill">EV packet · ${escapeHTML(priceState.packets?.evBerry?.enabled ? "On" : "Off")}</span>
     <span class="hero-pill">Harvest Tool · 350</span>
     <span class="hero-pill">${escapeHTML(syncLabel)}</span>
   `;

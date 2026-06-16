@@ -50,6 +50,8 @@
           <div id="shop-hero-summary" class="hero-pills" aria-live="polite"></div>
           <div class="shop-anchor-tabs" aria-label="Jump to shop section">
             <a class="hero-pill" href="#shop-seeds-heading">Seeds</a>
+            <a class="hero-pill" href="#shop-leppa-packet-heading">Leppa Packet</a>
+            <a class="hero-pill" href="#shop-ev-berry-packet-heading">EV Packet</a>
             <a class="hero-pill" href="#shop-berries-heading">Berries</a>
             <a class="hero-pill" href="#shop-powder-heading">Powder</a>
             <a class="hero-pill" href="#shop-ingredients-heading">Extras</a>
@@ -88,10 +90,20 @@
               <option value="auto">Auto</option>
             </select>
           </label>
+
+          <label class="field" for="shop-rhythm-mode">
+            <span>Farming rhythm</span>
+            <select id="shop-rhythm-mode" name="shop-rhythm-mode">
+              <option value="normal">Normal</option>
+              <option value="flow">Flow</option>
+            </select>
+          </label>
         </div>
 
         <p class="toolbar-note">
-          Harvest Tool is fixed at <strong>350 ¥</strong> everywhere. It is not configurable here.
+          Normal uses the standard day buckets. Flow uses exact grow-time uptime, so 16h berries
+          count as <strong>1.5 harvests/day</strong>. Harvest Tool is fixed at
+          <strong>350 ¥</strong> everywhere.
         </p>
       </section>
 
@@ -153,6 +165,36 @@
         </div>
 
         <div id="seed-price-cards" class="shop-card-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-leppa-packet-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">Leppa</p>
+            <h2 id="shop-leppa-packet-heading">Seed packet override</h2>
+          </div>
+        </div>
+
+        <p class="toolbar-note">
+          Optional manual price for a full Leppa seed packet. When enabled, the Leppa seed-buy
+          baseline uses this packet price instead of individual seed buy prices.
+        </p>
+        <div id="leppa-packet-settings" class="shop-card-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="shop-shell stack-md" aria-labelledby="shop-ev-berry-packet-heading">
+        <div class="section-heading section-heading--tight">
+          <div>
+            <p class="eyebrow">EV / NPC berries</p>
+            <h2 id="shop-ev-berry-packet-heading">Seed packet override</h2>
+          </div>
+        </div>
+
+        <p class="toolbar-note">
+          Optional manual price for a full 156-plot EV berry seed packet. When enabled, Berry Routes
+          use this packet price for EV berry buy-seed routes instead of individual seed buy prices.
+        </p>
+        <div id="ev-berry-packet-settings" class="shop-card-grid" aria-live="polite"></div>
       </section>
 
       <section class="shop-shell stack-md" aria-labelledby="shop-berries-heading">

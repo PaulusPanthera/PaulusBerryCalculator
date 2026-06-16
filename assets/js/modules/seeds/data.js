@@ -2,6 +2,7 @@
 // v2.0.0-beta
 // Flavor metadata and standard-cycle helpers for the Seed Routes page.
 import { FLAVOR_META, FLAVOR_ORDER } from "../pricing/defaults.js";
+import { getStandardDaysForGrowth as getSharedStandardDaysForGrowth } from "../settings/rhythm.js";
 
 export const FLAVOR_TABS = [
   {
@@ -24,15 +25,7 @@ export const STANDARD_PLOTS_PER_CHARACTER = 156;
 export const DEFAULT_VERY_RATE_PERCENT = 30;
 
 export function getStandardDaysForGrowth(growthHours) {
-  if (growthHours <= 20) {
-    return 1;
-  }
-
-  if (growthHours <= 44) {
-    return 2;
-  }
-
-  return 3;
+  return getSharedStandardDaysForGrowth(growthHours);
 }
 
 export function getOrientationLabel(share) {

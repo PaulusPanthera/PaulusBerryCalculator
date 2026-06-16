@@ -2,7 +2,7 @@
   "name": "paulus-berry-calculator",
   "version": "0.1.0",
   "private": true,
-  "description": "Static starter for the PaulusBerryCalculator GitHub Pages project.",
+  "description": "Static PokeMMO berry farming calculator for prices, seed routes, berry routes, Leppa planning, powder crafting, and shopping lists.",
   "type": "module",
   "engines": {
     "node": ">=20.19"

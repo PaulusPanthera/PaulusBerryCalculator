@@ -1,7 +1,14 @@
 // assets/js/modules/pricing/store.js
 // v2.0.0-beta
 // Local price storage and helpers for Shop, route tabs, and powder crafting.
-import { AUTO_SOURCE_PRESETS, DEFAULT_PRICE_STATE, FLAVOR_ORDER } from "./defaults.js";
+import {
+  AUTO_SOURCE_PRESETS,
+  DEFAULT_PRICE_STATE,
+  EV_BERRY_SEED_PACKET_SIZE,
+  FLAVOR_ORDER,
+  LEPPA_SEED_PACKET_SIZE,
+} from "./defaults.js";
+import { normalizeRhythmMode } from "../settings/rhythm.js";
 
 const PRICE_STORAGE_KEY = "paulus-berry-calculator-price-state-v1";
 
@@ -37,6 +44,22 @@ function normalizeMode(value, allowed, fallback) {
   return allowed.includes(value) ? value : fallback;
 }
 
+function normalizePacket(input = {}, seedsPerPacket) {
+  return {
+    enabled: input.enabled === true,
+    price: Number(input.price) || 0,
+    seedsPerPacket,
+  };
+}
+
+function normalizeLeppaPacket(input = {}) {
+  return normalizePacket(input, LEPPA_SEED_PACKET_SIZE);
+}
+
+function normalizeEvBerryPacket(input = {}) {
+  return normalizePacket(input, EV_BERRY_SEED_PACKET_SIZE);
+}
+
 function normalizePowderNumberMap(input) {
   const output = {};
 
@@ -53,6 +76,11 @@ function normalizePriceState(state) {
 
   merged.seeds.mode = merged.seeds.mode === "auto" ? "auto" : "manual";
   merged.berries.mode = normalizeMode(merged.berries.mode, ["vendor", "manual", "auto"], "vendor");
+  merged.assumptions ||= {};
+  merged.assumptions.rhythmMode = normalizeRhythmMode(merged.assumptions.rhythmMode);
+  merged.packets ||= {};
+  merged.packets.leppa = normalizeLeppaPacket(merged.packets.leppa);
+  merged.packets.evBerry = normalizeEvBerryPacket(merged.packets.evBerry);
 
   for (const flavor of FLAVOR_ORDER) {
     const flavorEntry = merged.seeds.manual[flavor];
@@ -149,6 +177,49 @@ export function getHarvestToolPrice() {
   return 350;
 }
 
+function getSeedPacketQuote(packet, plantings, seedsPerPacket) {
+  const safePlantings = Number(plantings) || 0;
+
+  if (!packet.enabled || !(packet.price > 0) || !(safePlantings > 0)) {
+    return {
+      enabled: false,
+      price: packet.price,
+      seedsPerPacket,
+      packets: 0,
+      value: 0,
+      unitPlantingCost: 0,
+    };
+  }
+
+  const packets = safePlantings / seedsPerPacket;
+  const value = packets * packet.price;
+
+  return {
+    enabled: true,
+    price: packet.price,
+    seedsPerPacket,
+    packets,
+    value,
+    unitPlantingCost: packet.price / seedsPerPacket,
+  };
+}
+
+export function getLeppaSeedPacketQuote(priceState, plantings = LEPPA_SEED_PACKET_SIZE) {
+  return getSeedPacketQuote(
+    normalizeLeppaPacket(priceState?.packets?.leppa),
+    plantings,
+    LEPPA_SEED_PACKET_SIZE,
+  );
+}
+
+export function getEvBerrySeedPacketQuote(priceState, plantings = EV_BERRY_SEED_PACKET_SIZE) {
+  return getSeedPacketQuote(
+    normalizeEvBerryPacket(priceState?.packets?.evBerry),
+    plantings,
+    EV_BERRY_SEED_PACKET_SIZE,
+  );
+}
+
 export function getBerryPriceByMode(priceState, berry, mode = "vendor", side = "sell") {
   const safeSide = side === "buy" ? "buy" : "sell";
   const safeMode = normalizeMode(mode, ["vendor", "manual", "auto"], "vendor");
@@ -174,6 +245,26 @@ export function getBerryPriceByMode(priceState, berry, mode = "vendor", side = "
 
 export function getBerryPrice(priceState, berry, side = "sell") {
   return getBerryPriceByMode(priceState, berry, priceState?.berries?.mode || "vendor", side);
+}
+
+export function getBerryToolingBuyQuote(priceState, berry) {
+  const mode = normalizeMode(
+    priceState?.berries?.mode || "vendor",
+    ["vendor", "manual", "auto"],
+    "vendor",
+  );
+  const manualValue = Number(priceState?.berries?.manual?.[berry.slug]?.buy) || 0;
+  const autoValue = Number(priceState?.berries?.auto?.[berry.slug]?.buy) || 0;
+
+  if (mode === "auto" && autoValue > 0) {
+    return { price: autoValue, hasPrice: true, source: "auto" };
+  }
+
+  if ((mode === "manual" || mode === "auto") && manualValue > 0) {
+    return { price: manualValue, hasPrice: true, source: "manual" };
+  }
+
+  return { price: null, hasPrice: false, source: mode === "vendor" ? "vendor" : "missing" };
 }
 
 export function getPowderBerryBuyPrice(priceState, berry) {

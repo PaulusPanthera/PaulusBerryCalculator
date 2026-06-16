@@ -9,6 +9,7 @@ import {
   formatSignedMoney,
   formatYield,
 } from "../format.js";
+import { getRhythmLabel } from "../settings/rhythm.js";
 
 function renderStat(label, value, tone = "default") {
   return `
@@ -17,6 +18,14 @@ function renderStat(label, value, tone = "default") {
       <strong>${value}</strong>
     </div>
   `;
+}
+
+function getRouteScheduleLabel(route) {
+  if (route?.rhythmMode === "flow" && Number(route?.scheduleDays) > 0) {
+    return `Flow ${route.scheduleDays.toFixed(2)}d`;
+  }
+
+  return `${route?.standardDays || 1}d standard`;
 }
 
 function renderQuickShoppingButton(route) {
@@ -50,6 +59,7 @@ export function renderPowderHeroSummary(target, scenario) {
     <span class="hero-pill">${escapeHTML(target.label)}</span>
     <span class="hero-pill">${escapeHTML(String(scenario.characters))} character${scenario.characters === 1 ? "" : "s"}</span>
     <span class="hero-pill">${escapeHTML(String(scenario.profitableCount))} profitable</span>
+    <span class="hero-pill">${escapeHTML(getRhythmLabel(scenario.rhythmMode))} rhythm</span>
   `;
 }
 
@@ -96,7 +106,7 @@ export function renderPowderRouteCards(target, routes) {
 
         <div class="seed-method-strip">
           <span class="seed-method-chip seed-method-chip--${escapeHTML(badgeTone)}">${escapeHTML(status)}</span>
-          <span class="seed-method-chip">${escapeHTML(String(route.standardDays))}d standard</span>
+          <span class="seed-method-chip">${escapeHTML(getRouteScheduleLabel(route))}</span>
           <span class="seed-method-chip">${escapeHTML(route.recipeMethodLabel || "Exact")}</span>
         </div>
 
@@ -137,6 +147,7 @@ export function renderPowderModal(route) {
           <h3>Route</h3>
           <div class="seed-preview-grid">
             ${renderStat("Grow time", escapeHTML(formatHours(route.berry.growthHours)))}
+            ${renderStat("Rhythm", escapeHTML(getRouteScheduleLabel(route)))}
             ${renderStat("Yield", escapeHTML(formatYield(route.berry.yieldPerPlot)))}
             ${renderStat("Powder", escapeHTML(formatNumber(Math.round(route.totalBerries))))}
             ${renderStat(route.target.label, escapeHTML(formatNumber(Math.round(route.itemYield * 100) / 100)))}

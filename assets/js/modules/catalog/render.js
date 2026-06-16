@@ -10,6 +10,7 @@ import {
   formatYield,
   formatYieldProfile,
 } from "../format.js";
+import { getAlternativeRecipeMethods } from "../recipes/variants.js";
 
 function parseSeedLabel(seedLabel) {
   const [kind, flavor] = seedLabel.toLowerCase().split(" ");
@@ -85,44 +86,8 @@ function renderQuickShoppingButton(berry, methodKey = "best") {
   `;
 }
 
-function getAlternativeSeedRecipes(berry) {
-  if (berry.seedRecipe.length !== 2) {
-    return [];
-  }
-
-  const alternates = new Map();
-
-  berry.seedRecipe.forEach((seedLabel, index) => {
-    const { kind, flavor } = parseSeedLabel(seedLabel);
-
-    if (kind !== "very") {
-      return;
-    }
-
-    const flavorLabel = `${flavor[0].toUpperCase()}${flavor.slice(1)}`;
-    const replacement = [
-      ...berry.seedRecipe.slice(0, index),
-      `Plain ${flavorLabel}`,
-      `Plain ${flavorLabel}`,
-      ...berry.seedRecipe.slice(index + 1),
-    ];
-
-    if (replacement.length > 3) {
-      return;
-    }
-
-    const signature = [...replacement].sort().join("|");
-
-    if (!alternates.has(signature)) {
-      alternates.set(signature, replacement);
-    }
-  });
-
-  return [...alternates.values()];
-}
-
 function renderAlternativeSeedRecipes(berry) {
-  const alternates = getAlternativeSeedRecipes(berry);
+  const alternates = getAlternativeRecipeMethods(berry);
 
   if (alternates.length === 0) {
     return "";
@@ -132,8 +97,8 @@ function renderAlternativeSeedRecipes(berry) {
     <p class="muted">Also valid:</p>
     ${alternates
       .map(
-        (recipe) => `
-          <div class="recipe-list recipe-list--alternate">${recipe.map(renderRecipeChip).join("")}</div>
+        (method) => `
+          <div class="recipe-list recipe-list--alternate">${method.recipe.map(renderRecipeChip).join("")}</div>
         `,
       )
       .join("")}
@@ -265,10 +230,22 @@ export function renderFlavorLegend() {
 }
 
 export function renderModalContent(target, berry, seedHarvest) {
-  const edgeClass = seedHarvest.currentEdge < 0 ? " is-negative" : "";
+  const hasCurrentBuy = seedHarvest.hasCurrentBerryBuy;
+  const edgeClass = hasCurrentBuy && seedHarvest.currentEdge < 0 ? " is-negative" : "";
   const totalCostClass =
-    seedHarvest.currentTotalCost > seedHarvest.expectedSeedBuyValue ? " is-negative" : "";
+    hasCurrentBuy && seedHarvest.currentTotalCost > seedHarvest.expectedSeedBuyValue
+      ? " is-negative"
+      : "";
   const breakdownSummary = renderBreakdownSummary(seedHarvest);
+  const currentCostLabel = hasCurrentBuy
+    ? formatMoney(Math.round(seedHarvest.currentTotalCost))
+    : "Set manual/auto buy";
+  const currentEdgeLabel = hasCurrentBuy
+    ? formatSignedMoney(Math.round(seedHarvest.currentEdge))
+    : "—";
+  const currentBuySourceLabel = hasCurrentBuy
+    ? `Berry buy source: ${seedHarvest.currentBerryBuySource}`
+    : "Current berry mode is vendor or missing a berry buy price, so the edge is hidden to avoid fake buy-and-tool wins.";
   const breakpointNote = seedHarvest.isBlended
     ? "Mixed-output berry: color odds are weighted by the recipe itself (Plain = 1 point, Very = 2 points); colors with 2+ points split into Plain/Very outputs."
     : "Pure-color berry: this breakpoint compares one harvested seed per berry against the current Shop seed buys; colors with 2+ points split into Plain/Very outputs.";
@@ -348,14 +325,15 @@ export function renderModalContent(target, berry, seedHarvest) {
               </div>
               <div class="detail-tile${totalCostClass}">
                 <span>Current berry + tool</span>
-                <strong>${formatMoney(Math.round(seedHarvest.currentTotalCost))}</strong>
+                <strong>${escapeHTML(currentCostLabel)}</strong>
               </div>
               <div class="detail-tile${edgeClass}">
                 <span>Current edge</span>
-                <strong>${formatSignedMoney(Math.round(seedHarvest.currentEdge))}</strong>
+                <strong>${escapeHTML(currentEdgeLabel)}</strong>
               </div>
             </div>
             <p class="muted">Output mix: ${escapeHTML(breakdownSummary)}</p>
+            <p class="muted">${escapeHTML(currentBuySourceLabel)}</p>
             <p class="muted">${escapeHTML(breakpointNote)}</p>
           </div>
         </section>
